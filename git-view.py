@@ -89,8 +89,8 @@ print('''
 <!--
 
 var redraw;
-var height = 3000;
-var width = 4000;
+var height = ''' + str(10 * 100) + ''';
+var width = ''' + str(10 * 400) + ''';
 
 /* only do all this when document has finished loading (needed for RaphaelJS */
 window.onload = function()
@@ -99,9 +99,10 @@ window.onload = function()
 
 ''', file = f)
 
-for commitName in commits:
+for date in sorted(commitsByDate.keys(), reverse=True):
+	commitName = commitsByDate[date]
 	for parentCommitName in commits[commitName]['parents']:
-		print('g.addEdge("' + commitName[:8] + '", "' + parentCommitName[:8] + '");', file = f)
+		print('g.addEdge("' + commitName[:8] + '", "' + parentCommitName[:8] + '", { directed : true } );', file = f)
 
 print('''
 	/* layout the graph using the Spring layout implementation */
