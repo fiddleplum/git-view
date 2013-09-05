@@ -7,11 +7,11 @@ import time
 
 gitPath = '/bin/git'
 
-if len(sys.argv) != 2:
-	print("Syntax: py git-view.py <path-to-git-repo>")
+if len(sys.argv) < 2:
+	print("Syntax: py git-view.py <path-to-git-repo> <maximum-number-commits-on-each-branch>")
 	exit(0)
 
-path = " ".join(sys.argv[1:])
+path = sys.argv[1]
 if path[-1] != "/":
 	path = path + "/"
 
@@ -25,7 +25,7 @@ def callGit (args):
 
 # get branches
 branchLines = callGit('branch -a')
-branchNames = []
+activeBranchNames = []
 for branchLine in branchLines:
 	if len(branchLine) == 0:
 		continue
@@ -33,53 +33,120 @@ for branchLine in branchLines:
 	if branchName.startswith('remotes/origin/HEAD'):
 		continue
 	if branchName.startswith('remotes/'):
-		branchName = branchName[8:]
-	branchNames.append(branchName)
+		continue
+	activeBranchNames.append(branchName)
+branchNames = set()
+branchNames.update(activeBranchNames)
 
 # get commits
 headCommits = []
 commits = {}
 commitsByDate = {}
-for branchName in branchNames:
+remotes = []
+
+for branchName in activeBranchNames:
 	count = 0
 	lastCommit = None
-	logLines = callGit('log --date=raw ' + branchName)
+	logLines = callGit('log --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branchName)
 	for logLine in logLines:
 		if logLine.startswith('commit '):
 			name = logLine[7:]
-			if name in commits:
-				commits[name]['branches'].append(branchName)
-			else:
+			if name not in commits:
 				commit = {}
 				commit['name'] = name
-				commit['branches'] = [branchName]
-				commit['children'] = []
-				commit['parents'] = []
-				commit['HEAD'] = []
+				commit['branch'] = '' # set of branches at this commit
+				commit['merge'] = [] # list of branch names from a merge
+				commit['parents'] = [] # list of parents commits (from merges or just previous commits)
+				commit['children'] = [] # list of children commits
 				commit['level'] = 0
 				commits[name] = commit
-			if lastCommit is not None:
-				commits[lastCommit]['children'].append(name)
-			else:
-				commits[name]['HEAD'].append(branchName)
+			if lastCommit is None:	
+				commits[name]['branch'] = branchName
 			lastCommit = name
 		elif logLine.startswith('Date'):
 			date = logLine[8:-6]
 			commits[lastCommit]['date'] = date
 			commitsByDate[date] = lastCommit
 		elif logLine.startswith('    Merge branch'):
-			
+			if len(commits[lastCommit]['merge']) == 0:
+				firstBranchNameEndIndex = logLine.find('\'', 18)
+				firstRemote = (logLine[firstBranchNameEndIndex + 2:firstBranchNameEndIndex + 4] == 'of')
+### TODO: Make remotes unique.
+				secondBranchNameStartIndex = logLine.find('into ')
+				if secondBranchNameStartIndex != -1:
+					branch1 = logLine[5 + secondBranchNameStartIndex:]
+					commits[lastCommit]['merge'].append(branch1)
+					branchNames.add(branch1)
+				else:
+					commits[lastCommit]['merge'].append('')
+				branch2 = ('remote:' if firstRemote else '') + logLine[18:firstBranchNameEndIndex]
+				commits[lastCommit]['merge'].append(branch2)
+				branchNames.add(branch2)
+		elif logLine.startswith('    Merge pull request'):
+			if len(commits[lastCommit]['merge']) == 0:
+				firstBranchNameEndIndex = logLine.find('\'', 18)
+				firstRemote = (logLine[firstBranchNameEndIndex + 2:firstBranchNameEndIndex + 4] == 'of')
+				secondBranchNameStartIndex = logLine.rfind(' ') + 1
+				commits[lastCommit]['merge'].append('')
+				branch2 = logLine[secondBranchNameStartIndex:]
+				commits[lastCommit]['merge'].append(branch2)
+				branchNames.add(branch2)
+				print(str(commits[lastCommit]['merge']))
 
 # get parents of each commit
 for commitName in commits:
 	commits[commitName]['parents'] = (callGit('rev-list --parents -n 1 ' + commitName)[0].split(' '))[1:]
+	for parentCommitName in commits[commitName]['parents']:
+		if parentCommitName in commits and commitName not in commits[parentCommitName]['children']:
+			commits[parentCommitName]['children'].append(commitName)
+
+# fill in rest of branch info
+for date in sorted(commitsByDate.keys(), reverse=True):
+	commitName = commitsByDate[date]
+	if len(commits[commitName]['merge']) == 2:
+		if commits[commitName]['merge'][0] != '' and commits[commitName]['parents'][0] in commits:
+			commits[commits[commitName]['parents'][0]]['branch'] = commits[commitName]['merge'][0]
+			commits[commitName]['branch'] = commits[commitName]['merge'][0]
+		if commits[commitName]['merge'][1] != '' and commits[commitName]['parents'][1] in commits:
+			commits[commits[commitName]['parents'][1]]['branch'] = commits[commitName]['merge'][1]
+for date in sorted(commitsByDate.keys(), reverse=True):
+	commitName = commitsByDate[date]
+	branchName = commits[commitName]['branch']
+	noBranchParentName = ''
+	for parentName in commits[commitName]['parents']:
+		if parentName in commits and branchName == commits[parentName]['branch']:
+			noBranchParentName = ''
+			break # the branch is already in a parent
+		if parentName in commits and commits[parentName]['branch'] == '':
+			if noBranchParentName is not '':
+				noBranchParentName = ''
+				break # more than one parent with no branch
+			noBranchParentName = parentName
+	if noBranchParentName is not '':
+		commits[noBranchParentName]['branch'] = branchName
+# for date in sorted(commitsByDate.keys(), reverse=False):
+	# commitName = commitsByDate[date]
+	# branchName = commits[commitName]['branch']
+	# noBranchChildName = ''
+	# for childName in commits[commitName]['children']:
+		# if childName in commits and branchName == commits[childName]['branch']:
+			# noBranchChildName = ''
+			# break # the branch is already in a child
+		# if childName in commits and commits[childName]['branch'] == '':
+			# if noBranchChildName is not '':
+				# noBranchChildName = ''
+				# break # more than one child with no branch
+			# noBranchChildName = childName
+	# if noBranchChildName is not '':
+		# commits[noBranchChildName]['branch'] = branchName
 
 # get commit levels
 maxLevel = 0
 for date in sorted(commitsByDate.keys(), reverse=True):
 	commitName = commitsByDate[date]
 	for parentCommitName in commits[commitName]['parents']:
-		commits[parentCommitName]['level'] = max(commits[parentCommitName]['level'], commits[commitName]['level'] + 1)
+		if parentCommitName in commits:
+			commits[parentCommitName]['level'] = max(commits[parentCommitName]['level'], commits[commitName]['level'] + 1)
 	maxLevel = max(maxLevel, commits[commitName]['level'])
 
 # get node text for each commit
@@ -100,7 +167,7 @@ print('''
 <!--
 
 var redraw;
-var height = ''' + str(400) + ''';
+var height = ''' + str(len(branchNames) * 60) + ''';
 var width = ''' + str(maxLevel * 100) + ''';
 
 var render = function(r, n) {
@@ -127,18 +194,17 @@ window.onload = function()
 
 ''', file = f)
 
-#### TODO: Add new layout that takes levels of nodes. Then at each node, it sets it a h * hlevel for the x position, and for the vertical, keeps a counter of how many are already at that level, doing v * vlevel for the y position.
-
 for commitName in commits:
 	print('''
 		node = g.addNode("''' + commits[commitName]['nodetext'] + '''");
-		node.innerid = "''' + ','.join(commits[commitName]['HEAD']) + '''";
+		node.innerid = "''' + commits[commitName]['branch'] + '''";
 		''', file = f)
-	print(','.join(commits[commitName]['HEAD']))
+#	print(','.join(commits[commitName]['HEAD']))
 
 for commitName in commits:
 	for parentCommitName in commits[commitName]['parents']:
-		print('g.addEdge("' + commits[parentCommitName]['nodetext'] + '", "' + commits[commitName]['nodetext'] + '", { directed : true } );', file = f)
+		if parentCommitName in commits:
+			print('g.addEdge("' + commits[parentCommitName]['nodetext'] + '", "' + commits[commitName]['nodetext'] + '", { directed : true } );', file = f)
 
 for commitName in commits:
 	print('levels["' + commits[commitName]['nodetext'] + '"] = ' + str(commits[commitName]['level']) + ';', file = f)
@@ -167,20 +233,5 @@ print('''
 ''', file = f)
 
 # print top of table
-print('<table><tr><td>Commit</td>', file = f)
-for branchName in branchNames:
-	print('<td>' + branchName + '</td>', file = f)
-print('</tr>', file = f)
-
-# print commit rows
-for date in sorted(commitsByDate.keys(), reverse=True):
-	commitName = commitsByDate[date]
-	print('<tr><td>' + commits[commitName]['nodetext'] + '</td>', file = f)
-	for branchName in branchNames:
-		if branchName in commits[commitName]['branches']:
-			print('<td>X</td>', file = f)
-		else:
-			print('<td></td>', file = f)
-	print('</tr>', file = f)
-print('</table></body></html>', file = f)
+print('</body></html>', file = f)
 

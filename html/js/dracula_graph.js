@@ -243,7 +243,6 @@ Graph.Renderer.Raphael.prototype = {
                 var ellipse = r.ellipse(0, 0, 5, 5).attr({fill: color, stroke: color, "stroke-width": 2});
                 /* set DOM node ID */
                 ellipse.node.id = node.label || node.id;
-				document.getElementById('console').innerHTML += '<p>' + node.innerid + '</p>';
                 shape = r.set().
                     push(ellipse).
 					push(r.text(0, -15, node.innerid == '' ? '-' : node.innerid)).
@@ -477,6 +476,7 @@ Graph.Layout.Leveled = function(graph, levels) {
     this.graph = graph;
     this.levels = levels;
 	this.levelCount = []
+	this.branches = []
     this.layout();
 };
 Graph.Layout.Leveled.prototype = {
@@ -491,14 +491,30 @@ Graph.Layout.Leveled.prototype = {
             var node = this.graph.nodes[i];
 			var level = this.levels[node.id];
             node.layoutPosX = level;
-			if (level in this.levelCount) {
-				this.levelCount[level]++;
+			branchIndex = node.innerid.indexOf(',');
+			var branch = '';
+			if (branchIndex == -1) {
+				branch = node.innerid;
 			}
 			else {
-				this.levelCount[level] = 0;
+				branch = node.innerid.substr(0, branchIndex);
 			}
-			node.layoutPosY = this.levelCount[level];
-        }
+			if (branch == '') {
+				branch = '-';
+			}
+			if (this.branches.indexOf(branch) == -1) {
+				this.branches.push(branch);
+			}
+			document.getElementById('console').innerHTML += '<p>' + branch + ': ' + this.branches.indexOf(branch) + '</p>';
+			node.layoutPosY = this.branches.indexOf(branch);
+			// if (level in this.levelCount) {
+				// this.levelCount[level]++;
+			// }
+			// else {
+				// this.levelCount[level] = 0;
+			// }
+			// node.layoutPosY = this.levelCount[level];
+			}
     },
     
     layoutCalcBounds: function() {
