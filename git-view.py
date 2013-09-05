@@ -19,9 +19,20 @@ def callGit (args):
 	pr = subprocess.Popen([gitPath] + args.split(' '), cwd=path, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 	(out, error) = pr.communicate()
 	if len(error) != 0:
-		print("Error running git " + args + ":\n" + error.decode('UTF-8'))
-		exit(0)
-	return out.decode('UTF-8').split('\n')
+#		print("Error running git " + args + ":\n" + error.decode('UTF-8'))
+		return None
+	else:
+		return out.decode('UTF-8').split('\n')
+
+def newCommit (name):
+	commit = {}
+	commit['name'] = name
+	commit['branches'] = set() # set of branches at this commit
+	commit['merge'] = [] # list of branch names from a merge
+	commit['parents'] = [] # list of parents commits (from merges or just previous commits)
+	commit['children'] = [] # list of children commits
+	commit['level'] = 0
+	return commit
 
 # get branches
 branchLines = callGit('branch -a')
@@ -38,107 +49,133 @@ for branchLine in branchLines:
 branchNames = set()
 branchNames.update(activeBranchNames)
 
+# add only the remotes we care about
+remoteBranchNames = []
+for branchName in activeBranchNames:
+	remoteBranchNames.append('origin/' + branchName)
+activeBranchNames.extend(remoteBranchNames)
+
 # get commits
 headCommits = []
 commits = {}
 commitsByDate = {}
 remotes = []
+merges = []
 
 for branchName in activeBranchNames:
 	count = 0
 	lastCommit = None
 	logLines = callGit('log --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branchName)
+	if logLines is None:
+		continue # not a valid branch, so ignore it
 	for logLine in logLines:
 		if logLine.startswith('commit '):
 			name = logLine[7:]
 			if name not in commits:
-				commit = {}
-				commit['name'] = name
-				commit['branch'] = '' # set of branches at this commit
-				commit['merge'] = [] # list of branch names from a merge
-				commit['parents'] = [] # list of parents commits (from merges or just previous commits)
-				commit['children'] = [] # list of children commits
-				commit['level'] = 0
+				commit = newCommit(name)
 				commits[name] = commit
 			if lastCommit is None:	
-				commits[name]['branch'] = branchName
+				commits[name]['branches'].add(branchName)
 			lastCommit = name
 		elif logLine.startswith('Date'):
 			date = logLine[8:-6]
 			commits[lastCommit]['date'] = date
 			commitsByDate[date] = lastCommit
-		elif logLine.startswith('    Merge branch'):
-			if len(commits[lastCommit]['merge']) == 0:
-				firstBranchNameEndIndex = logLine.find('\'', 18)
-				firstRemote = (logLine[firstBranchNameEndIndex + 2:firstBranchNameEndIndex + 4] == 'of')
-### TODO: Make remotes unique.
-				secondBranchNameStartIndex = logLine.find('into ')
-				if secondBranchNameStartIndex != -1:
-					branch1 = logLine[5 + secondBranchNameStartIndex:]
-					commits[lastCommit]['merge'].append(branch1)
-					branchNames.add(branch1)
-				else:
-					commits[lastCommit]['merge'].append('')
-				branch2 = ('remote:' if firstRemote else '') + logLine[18:firstBranchNameEndIndex]
-				commits[lastCommit]['merge'].append(branch2)
-				branchNames.add(branch2)
+		elif logLine.startswith('    Merge branch \''):
+			fromBranchNameEndIndex = logLine.find('\'', 18)
+			firstRemote = (logLine[fromBranchNameEndIndex + 2:fromBranchNameEndIndex + 4] == 'of')
+			fromBranch = ('origin/' if firstRemote else '') + logLine[18:fromBranchNameEndIndex]
+			branchNames.add(fromBranch)
+			toBranchNameStartIndex = logLine.find('into ')
+			if toBranchNameStartIndex != -1:
+				toBranch = logLine[5 + toBranchNameStartIndex:]
+				branchNames.add(toBranch)
+			else:
+				toBranch = 'master' # if no to branch is named, it defaults to master
+			merges.append([lastCommit, fromBranch, toBranch])
 		elif logLine.startswith('    Merge pull request'):
-			if len(commits[lastCommit]['merge']) == 0:
-				firstBranchNameEndIndex = logLine.find('\'', 18)
-				firstRemote = (logLine[firstBranchNameEndIndex + 2:firstBranchNameEndIndex + 4] == 'of')
-				secondBranchNameStartIndex = logLine.rfind(' ') + 1
-				commits[lastCommit]['merge'].append('')
-				branch2 = logLine[secondBranchNameStartIndex:]
-				commits[lastCommit]['merge'].append(branch2)
-				branchNames.add(branch2)
-				print(str(commits[lastCommit]['merge']))
+			fromBranchNameStartIndex = logLine.rfind(' ') + 1
+			toBranch = ''
+			fromBranch = logLine[fromBranchNameStartIndex:]
+			branchNames.add(fromBranch)
+			merges.append([lastCommit, fromBranch, toBranch])
 
 # get parents of each commit
+dummyCommits = {}
 for commitName in commits:
 	commits[commitName]['parents'] = (callGit('rev-list --parents -n 1 ' + commitName)[0].split(' '))[1:]
 	for parentCommitName in commits[commitName]['parents']:
 		if parentCommitName in commits and commitName not in commits[parentCommitName]['children']:
 			commits[parentCommitName]['children'].append(commitName)
+		else:
+			# make a dummy commit
+			commit = newCommit(parentCommitName)
+			dummyCommits[parentCommitName] = commit
+commits.update(dummyCommits)
 
-# fill in rest of branch info
-for date in sorted(commitsByDate.keys(), reverse=True):
-	commitName = commitsByDate[date]
-	if len(commits[commitName]['merge']) == 2:
-		if commits[commitName]['merge'][0] != '' and commits[commitName]['parents'][0] in commits:
-			commits[commits[commitName]['parents'][0]]['branch'] = commits[commitName]['merge'][0]
-			commits[commitName]['branch'] = commits[commitName]['merge'][0]
-		if commits[commitName]['merge'][1] != '' and commits[commitName]['parents'][1] in commits:
-			commits[commits[commitName]['parents'][1]]['branch'] = commits[commitName]['merge'][1]
-for date in sorted(commitsByDate.keys(), reverse=True):
-	commitName = commitsByDate[date]
-	branchName = commits[commitName]['branch']
-	noBranchParentName = ''
-	for parentName in commits[commitName]['parents']:
-		if parentName in commits and branchName == commits[parentName]['branch']:
-			noBranchParentName = ''
-			break # the branch is already in a parent
-		if parentName in commits and commits[parentName]['branch'] == '':
-			if noBranchParentName is not '':
-				noBranchParentName = ''
-				break # more than one parent with no branch
-			noBranchParentName = parentName
-	if noBranchParentName is not '':
-		commits[noBranchParentName]['branch'] = branchName
+# fill in branch info based on merge comments
+for merge in merges:
+	commitName = merge[0]
+	fromBranch = merge[1]
+	toBranch = merge[2]
+	if commits[commitName]['parents'][0] in commits:
+		if toBranch != '':
+			commits[commitName]['branches'].add(toBranch)
+			commits[commits[commitName]['parents'][0]]['branches'].add(toBranch)
+		else:
+			commits[commits[commitName]['parents'][0]]['branches'].update(commits[commitName]['branches'])
+	if commits[commitName]['parents'][1] in commits:
+		if fromBranch != '':
+			commits[commits[commitName]['parents'][1]]['branches'].add(fromBranch)
+		
+
+
+# for date in sorted(commitsByDate.keys(), reverse=True):
+	# commitName = commitsByDate[date]
+	# if len(commits[commitName]['merge']) == 2:
+		# if commits[commitName]['parents'][0] in commits:
+			# if commits[commitName]['merge'][0] != '':
+				# commits[commits[commitName]['parents'][0]]['branches'].add(commits[commitName]['merge'][0])
+				# commits[commitName]['branches'].add(commits[commitName]['merge'][0])
+			# else:
+				# commits[commits[commitName]['parents'][0]]['branches'].update(commits[commitName]['merge'][0])
+		# if commits[commitName]['parents'][1] in commits:
+			# if commits[commitName]['merge'][1] != '':
+				# commits[commits[commitName]['parents'][1]]['branches'].add(commits[commitName]['merge'][1])
+
+# propogate the branches to the ancestors
+# for date in sorted(commitsByDate.keys(), reverse=True):
+	# commitName = commitsByDate[date]
+	# for branchName in commits[commitName]['branches']:
+		# noBranchParentName = ''
+		# for parentName in commits[commitName]['parents']:
+			# if parentName in commits and branchName in commits[parentName]['branches']:
+				# noBranchParentName = ''
+				# break # the branch is already in a parent
+			# if parentName in commits and len(commits[parentName]['branches']) == 0:
+				# if noBranchParentName is not '':
+					# noBranchParentName = ''
+					# break # more than one parent with no branch
+				# noBranchParentName = parentName
+		# if noBranchParentName is not '':
+			# commits[noBranchParentName]['branches'].add(branchName)
+
+# propogate the branches to the descendants
 # for date in sorted(commitsByDate.keys(), reverse=False):
 	# commitName = commitsByDate[date]
-	# branchName = commits[commitName]['branch']
-	# noBranchChildName = ''
-	# for childName in commits[commitName]['children']:
-		# if childName in commits and branchName == commits[childName]['branch']:
-			# noBranchChildName = ''
-			# break # the branch is already in a child
-		# if childName in commits and commits[childName]['branch'] == '':
-			# if noBranchChildName is not '':
+	# for branchName in commits[commitName]['branches']:
+		# noBranchChildName = ''
+		# for childName in commits[commitName]['children']:
+			# if childName in commits and branchName in commits[childName]['branches']:
 				# noBranchChildName = ''
-				# break # more than one child with no branch
-			# noBranchChildName = childName
-	# if noBranchChildName is not '':
-		# commits[noBranchChildName]['branch'] = branchName
+				# break # the branch is already in a child
+			# if childName in commits and len(commits[childName]['branches']) == 0:
+				# if noBranchChildName is not '':
+					# noBranchChildName = ''
+					# break # more than one child with no branch
+				# noBranchChildName = childName
+		# if noBranchChildName is not '':
+			# commits[noBranchChildName]['branches'].add(branchName)
 
 # get commit levels
 maxLevel = 0
@@ -170,22 +207,6 @@ var redraw;
 var height = ''' + str(len(branchNames) * 60) + ''';
 var width = ''' + str(maxLevel * 100) + ''';
 
-var render = function(r, n) {
-	/* the Raphael set is obligatory, containing all you want to display */
-	var set = r.set().push(
-		/* custom objects go here */
-		r.rect(n.point[0]-30, n.point[1]-13, 62, 86)
-			.attr({"fill": "#fa8", "stroke-width": 2, r : "9px"}))
-			.push(r.text(n.point[0], n.point[1] + 30, n.label)
-				.attr({"font-size":"20px"}));
-	/* custom tooltip attached to the set */
-	set.items.forEach(
-		function(el) {
-			el.tooltip(r.set().push(r.rect(0, 0, 30, 30)
-				.attr({"fill": "#fec", "stroke-width": 1, r : "9px"})))});
-	return set;
-};
-
 /* only do all this when document has finished loading (needed for RaphaelJS */
 window.onload = function()
 {
@@ -197,7 +218,7 @@ window.onload = function()
 for commitName in commits:
 	print('''
 		node = g.addNode("''' + commits[commitName]['nodetext'] + '''");
-		node.innerid = "''' + commits[commitName]['branch'] + '''";
+		node.innerid = "''' + ' '.join(commits[commitName]['branches']) + '''";
 		''', file = f)
 #	print(','.join(commits[commitName]['HEAD']))
 
