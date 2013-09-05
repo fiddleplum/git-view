@@ -8,56 +8,1319 @@
 <!--
 
 var redraw;
-var height = 1000;
-var width = 4000;
+var height = 400;
+var width = 15900;
+
+var render = function(r, n) {
+	/* the Raphael set is obligatory, containing all you want to display */
+	var set = r.set().push(
+		/* custom objects go here */
+		r.rect(n.point[0]-30, n.point[1]-13, 62, 86)
+			.attr({"fill": "#fa8", "stroke-width": 2, r : "9px"}))
+			.push(r.text(n.point[0], n.point[1] + 30, n.label)
+				.attr({"font-size":"20px"}));
+	/* custom tooltip attached to the set */
+	set.items.forEach(
+		function(el) {
+			el.tooltip(r.set().push(r.rect(0, 0, 30, 30)
+				.attr({"fill": "#fec", "stroke-width": 1, r : "9px"})))});
+	return set;
+};
 
 /* only do all this when document has finished loading (needed for RaphaelJS */
 window.onload = function()
 {
 	var g = new Graph();
+	var levels = {};
 
 
-g.addEdge("995265aa", "c1ca4343", { directed : true } );
-g.addEdge("c1ca4343", "3659faa1", { directed : true } );
-g.addEdge("3659faa1", "8684ad07", { directed : true } );
-g.addEdge("8684ad07", "db999beb", { directed : true } );
-g.addEdge("db999beb", "81db94db", { directed : true } );
-g.addEdge("81db94db", "612be729", { directed : true } );
-g.addEdge("612be729", "9b536a35", { directed : true } );
-g.addEdge("9b536a35", "0b617cdf", { directed : true } );
-g.addEdge("0b617cdf", "4aac07fa", { directed : true } );
-g.addEdge("4aac07fa", "e0b04b45", { directed : true } );
-g.addEdge("e0b04b45", "fe405ef9", { directed : true } );
-g.addEdge("fe405ef9", "c766c6a1", { directed : true } );
-g.addEdge("c766c6a1", "05ed1988", { directed : true } );
-g.addEdge("05ed1988", "10da0a6b", { directed : true } );
-g.addEdge("10da0a6b", "9a0ac456", { directed : true } );
-g.addEdge("9a0ac456", "7f22a9c7", { directed : true } );
-g.addEdge("7f22a9c7", "cf8df122", { directed : true } );
-g.addEdge("cf8df122", "1db5eb9f", { directed : true } );
-g.addEdge("1db5eb9f", "bd6c516a", { directed : true } );
-g.addEdge("bd6c516a", "08fcbcd3", { directed : true } );
-g.addEdge("08fcbcd3", "86f48782", { directed : true } );
-g.addEdge("86f48782", "dff8642e", { directed : true } );
-g.addEdge("dff8642e", "8cbbdf43", { directed : true } );
-g.addEdge("8cbbdf43", "e26bbee7", { directed : true } );
-g.addEdge("e26bbee7", "6dfaa6b2", { directed : true } );
-g.addEdge("6dfaa6b2", "a31a7401", { directed : true } );
-g.addEdge("a31a7401", "e12b4860", { directed : true } );
-g.addEdge("e12b4860", "6d5659e1", { directed : true } );
-g.addEdge("6d5659e1", "b3f03c01", { directed : true } );
-g.addEdge("b3f03c01", "a80e137c", { directed : true } );
-g.addEdge("a80e137c", "bedf0279", { directed : true } );
-g.addEdge("bedf0279", "d025627b", { directed : true } );
-g.addEdge("d025627b", "676167ad", { directed : true } );
-g.addEdge("676167ad", "0474ac80", { directed : true } );
-g.addEdge("0474ac80", "866d0191", { directed : true } );
-g.addEdge("866d0191", "1d5720df", { directed : true } );
-g.addEdge("1d5720df", "a93960aa", { directed : true } );
-g.addEdge("a93960aa", "6ed62857", { directed : true } );
+
+		node = g.addNode("f724b731");
+		node.innerid = "";
+		
+
+		node = g.addNode("25aa57ba");
+		node.innerid = "";
+		
+
+		node = g.addNode("2f963dc4");
+		node.innerid = "";
+		
+
+		node = g.addNode("d21c17be");
+		node.innerid = "";
+		
+
+		node = g.addNode("f57e92ee");
+		node.innerid = "";
+		
+
+		node = g.addNode("ad36702c");
+		node.innerid = "";
+		
+
+		node = g.addNode("642f204b");
+		node.innerid = "";
+		
+
+		node = g.addNode("ebf4e5de");
+		node.innerid = "";
+		
+
+		node = g.addNode("a8c0f6c4");
+		node.innerid = "";
+		
+
+		node = g.addNode("ae08e7d5");
+		node.innerid = "";
+		
+
+		node = g.addNode("58100a99");
+		node.innerid = "";
+		
+
+		node = g.addNode("e12fa161");
+		node.innerid = "";
+		
+
+		node = g.addNode("e2f1edf1");
+		node.innerid = "";
+		
+
+		node = g.addNode("ad33acea");
+		node.innerid = "";
+		
+
+		node = g.addNode("a14276bb");
+		node.innerid = "";
+		
+
+		node = g.addNode("04935f3c");
+		node.innerid = "";
+		
+
+		node = g.addNode("cd37d6ab");
+		node.innerid = "";
+		
+
+		node = g.addNode("5867de82");
+		node.innerid = "";
+		
+
+		node = g.addNode("a072c9f0");
+		node.innerid = "";
+		
+
+		node = g.addNode("c90998ae");
+		node.innerid = "";
+		
+
+		node = g.addNode("24139604");
+		node.innerid = "";
+		
+
+		node = g.addNode("1a2a35c4");
+		node.innerid = "";
+		
+
+		node = g.addNode("c88456e7");
+		node.innerid = "";
+		
+
+		node = g.addNode("8099f553");
+		node.innerid = "";
+		
+
+		node = g.addNode("d7a049c4");
+		node.innerid = "aux-5,origin/aux-5";
+		
+
+		node = g.addNode("c54b16f7");
+		node.innerid = "";
+		
+
+		node = g.addNode("11888720");
+		node.innerid = "";
+		
+
+		node = g.addNode("dfca4f5d");
+		node.innerid = "";
+		
+
+		node = g.addNode("49aba238");
+		node.innerid = "";
+		
+
+		node = g.addNode("8c8668a0");
+		node.innerid = "";
+		
+
+		node = g.addNode("0279c7a0");
+		node.innerid = "";
+		
+
+		node = g.addNode("137ba238");
+		node.innerid = "";
+		
+
+		node = g.addNode("b264af5e");
+		node.innerid = "";
+		
+
+		node = g.addNode("4f0be992");
+		node.innerid = "";
+		
+
+		node = g.addNode("0ac73631");
+		node.innerid = "";
+		
+
+		node = g.addNode("7f51c87c");
+		node.innerid = "";
+		
+
+		node = g.addNode("02a79f1d");
+		node.innerid = "";
+		
+
+		node = g.addNode("9b0e7ca1");
+		node.innerid = "";
+		
+
+		node = g.addNode("c6a875f1");
+		node.innerid = "";
+		
+
+		node = g.addNode("3c505afc");
+		node.innerid = "";
+		
+
+		node = g.addNode("e93bcaf4");
+		node.innerid = "";
+		
+
+		node = g.addNode("8143bef3");
+		node.innerid = "";
+		
+
+		node = g.addNode("c76287eb");
+		node.innerid = "";
+		
+
+		node = g.addNode("c87dcee8");
+		node.innerid = "";
+		
+
+		node = g.addNode("bcbd247b");
+		node.innerid = "";
+		
+
+		node = g.addNode("b5082475");
+		node.innerid = "";
+		
+
+		node = g.addNode("e310921e");
+		node.innerid = "";
+		
+
+		node = g.addNode("75198949");
+		node.innerid = "";
+		
+
+		node = g.addNode("9798038a");
+		node.innerid = "";
+		
+
+		node = g.addNode("881d2a08");
+		node.innerid = "";
+		
+
+		node = g.addNode("a7930724");
+		node.innerid = "";
+		
+
+		node = g.addNode("1d708a11");
+		node.innerid = "";
+		
+
+		node = g.addNode("883a36f2");
+		node.innerid = "";
+		
+
+		node = g.addNode("df5e268b");
+		node.innerid = "";
+		
+
+		node = g.addNode("2c25e9f7");
+		node.innerid = "";
+		
+
+		node = g.addNode("996e1985");
+		node.innerid = "";
+		
+
+		node = g.addNode("2f6cd6e7");
+		node.innerid = "";
+		
+
+		node = g.addNode("13a6e6cc");
+		node.innerid = "";
+		
+
+		node = g.addNode("55b7d0ee");
+		node.innerid = "";
+		
+
+		node = g.addNode("38620863");
+		node.innerid = "";
+		
+
+		node = g.addNode("8da283ef");
+		node.innerid = "";
+		
+
+		node = g.addNode("840f5c14");
+		node.innerid = "";
+		
+
+		node = g.addNode("480ebc3e");
+		node.innerid = "";
+		
+
+		node = g.addNode("6ca0c132");
+		node.innerid = "";
+		
+
+		node = g.addNode("1df85a72");
+		node.innerid = "";
+		
+
+		node = g.addNode("b3f45e42");
+		node.innerid = "";
+		
+
+		node = g.addNode("11481a90");
+		node.innerid = "";
+		
+
+		node = g.addNode("48327247");
+		node.innerid = "";
+		
+
+		node = g.addNode("59c90c1a");
+		node.innerid = "";
+		
+
+		node = g.addNode("af645bcc");
+		node.innerid = "";
+		
+
+		node = g.addNode("9aabdd65");
+		node.innerid = "";
+		
+
+		node = g.addNode("6011258d");
+		node.innerid = "";
+		
+
+		node = g.addNode("844fdf36");
+		node.innerid = "";
+		
+
+		node = g.addNode("f2e897cb");
+		node.innerid = "";
+		
+
+		node = g.addNode("087ae76e");
+		node.innerid = "";
+		
+
+		node = g.addNode("f4449ff1");
+		node.innerid = "";
+		
+
+		node = g.addNode("3e91addd");
+		node.innerid = "";
+		
+
+		node = g.addNode("e22f70a9");
+		node.innerid = "";
+		
+
+		node = g.addNode("bb25abfc");
+		node.innerid = "";
+		
+
+		node = g.addNode("fde9da91");
+		node.innerid = "";
+		
+
+		node = g.addNode("157cf3fb");
+		node.innerid = "";
+		
+
+		node = g.addNode("c18cf72c");
+		node.innerid = "";
+		
+
+		node = g.addNode("aed9add0");
+		node.innerid = "";
+		
+
+		node = g.addNode("09405fbc");
+		node.innerid = "";
+		
+
+		node = g.addNode("4d719525");
+		node.innerid = "";
+		
+
+		node = g.addNode("76e3cad8");
+		node.innerid = "";
+		
+
+		node = g.addNode("6f284fe6");
+		node.innerid = "";
+		
+
+		node = g.addNode("bfe30246");
+		node.innerid = "";
+		
+
+		node = g.addNode("c4063725");
+		node.innerid = "";
+		
+
+		node = g.addNode("656eaea3");
+		node.innerid = "";
+		
+
+		node = g.addNode("744acb51");
+		node.innerid = "";
+		
+
+		node = g.addNode("e6b50be0");
+		node.innerid = "";
+		
+
+		node = g.addNode("f4d3a561");
+		node.innerid = "";
+		
+
+		node = g.addNode("c4e61064");
+		node.innerid = "";
+		
+
+		node = g.addNode("3169305b");
+		node.innerid = "";
+		
+
+		node = g.addNode("e1ee0069");
+		node.innerid = "";
+		
+
+		node = g.addNode("905a0098");
+		node.innerid = "";
+		
+
+		node = g.addNode("686b6469");
+		node.innerid = "";
+		
+
+		node = g.addNode("052cc5c3");
+		node.innerid = "";
+		
+
+		node = g.addNode("48347ba8");
+		node.innerid = "";
+		
+
+		node = g.addNode("90e33589");
+		node.innerid = "";
+		
+
+		node = g.addNode("f3d1ce8c");
+		node.innerid = "";
+		
+
+		node = g.addNode("ab005754");
+		node.innerid = "";
+		
+
+		node = g.addNode("b0cb7077");
+		node.innerid = "";
+		
+
+		node = g.addNode("5149f80c");
+		node.innerid = "";
+		
+
+		node = g.addNode("69089b3e");
+		node.innerid = "";
+		
+
+		node = g.addNode("e9e8ea4d");
+		node.innerid = "";
+		
+
+		node = g.addNode("e12b4243");
+		node.innerid = "";
+		
+
+		node = g.addNode("7acffb8b");
+		node.innerid = "";
+		
+
+		node = g.addNode("7cdabbed");
+		node.innerid = "";
+		
+
+		node = g.addNode("9677ad0e");
+		node.innerid = "";
+		
+
+		node = g.addNode("e1636e64");
+		node.innerid = "";
+		
+
+		node = g.addNode("9d1cad0b");
+		node.innerid = "";
+		
+
+		node = g.addNode("e4249055");
+		node.innerid = "";
+		
+
+		node = g.addNode("2c87ef14");
+		node.innerid = "";
+		
+
+		node = g.addNode("7f47bf7c");
+		node.innerid = "";
+		
+
+		node = g.addNode("3a740fdd");
+		node.innerid = "";
+		
+
+		node = g.addNode("39fdc84f");
+		node.innerid = "";
+		
+
+		node = g.addNode("fd1075db");
+		node.innerid = "";
+		
+
+		node = g.addNode("bbee45b2");
+		node.innerid = "";
+		
+
+		node = g.addNode("50e4a5da");
+		node.innerid = "";
+		
+
+		node = g.addNode("f34a2040");
+		node.innerid = "";
+		
+
+		node = g.addNode("bb410799");
+		node.innerid = "";
+		
+
+		node = g.addNode("646ea21d");
+		node.innerid = "";
+		
+
+		node = g.addNode("f3b95e19");
+		node.innerid = "master,origin/master";
+		
+
+		node = g.addNode("365bd7cf");
+		node.innerid = "";
+		
+
+		node = g.addNode("23532fe9");
+		node.innerid = "";
+		
+
+		node = g.addNode("18227e1c");
+		node.innerid = "";
+		
+
+		node = g.addNode("15232ff1");
+		node.innerid = "";
+		
+
+		node = g.addNode("49523491");
+		node.innerid = "";
+		
+
+		node = g.addNode("3325fae3");
+		node.innerid = "";
+		
+
+		node = g.addNode("ea16a1b9");
+		node.innerid = "";
+		
+
+		node = g.addNode("01f51cfc");
+		node.innerid = "";
+		
+
+		node = g.addNode("0f12a7ae");
+		node.innerid = "";
+		
+
+		node = g.addNode("01f9d7fc");
+		node.innerid = "";
+		
+
+		node = g.addNode("519ca906");
+		node.innerid = "";
+		
+
+		node = g.addNode("3570ad2c");
+		node.innerid = "";
+		
+
+		node = g.addNode("fa9d7fb6");
+		node.innerid = "";
+		
+
+		node = g.addNode("df4b935c");
+		node.innerid = "";
+		
+
+		node = g.addNode("873b9d9b");
+		node.innerid = "";
+		
+
+		node = g.addNode("4b6b4812");
+		node.innerid = "";
+		
+
+		node = g.addNode("36182c78");
+		node.innerid = "";
+		
+
+		node = g.addNode("b70b7f55");
+		node.innerid = "";
+		
+
+		node = g.addNode("a1cbd2c4");
+		node.innerid = "";
+		
+
+		node = g.addNode("9b2e1d09");
+		node.innerid = "";
+		
+
+		node = g.addNode("bcad8c18");
+		node.innerid = "";
+		
+
+		node = g.addNode("dc9d79c9");
+		node.innerid = "";
+		
+
+		node = g.addNode("7ed67be8");
+		node.innerid = "";
+		
+
+		node = g.addNode("3552f0e9");
+		node.innerid = "";
+		
+
+		node = g.addNode("11e9ee29");
+		node.innerid = "";
+		
+
+		node = g.addNode("cb92dedd");
+		node.innerid = "";
+		
+
+		node = g.addNode("895a238e");
+		node.innerid = "";
+		
+
+		node = g.addNode("758183b3");
+		node.innerid = "";
+		
+
+		node = g.addNode("ba21026b");
+		node.innerid = "";
+		
+
+		node = g.addNode("b897f66d");
+		node.innerid = "";
+		
+
+		node = g.addNode("0adfa206");
+		node.innerid = "";
+		
+
+		node = g.addNode("193feb61");
+		node.innerid = "";
+		
+
+		node = g.addNode("509fb190");
+		node.innerid = "";
+		
+
+		node = g.addNode("f7f6fa19");
+		node.innerid = "";
+		
+
+		node = g.addNode("9b6a2dc1");
+		node.innerid = "";
+		
+
+		node = g.addNode("88317461");
+		node.innerid = "";
+		
+
+		node = g.addNode("949b46aa");
+		node.innerid = "";
+		
+
+		node = g.addNode("badf63f3");
+		node.innerid = "";
+		
+
+		node = g.addNode("b487f036");
+		node.innerid = "";
+		
+
+		node = g.addNode("bf2feee6");
+		node.innerid = "";
+		
+
+		node = g.addNode("8a466b04");
+		node.innerid = "";
+		
+
+		node = g.addNode("18ec5366");
+		node.innerid = "";
+		
+
+		node = g.addNode("ccdfb980");
+		node.innerid = "";
+		
+
+		node = g.addNode("77d7983e");
+		node.innerid = "";
+		
+
+		node = g.addNode("626f1f07");
+		node.innerid = "";
+		
+
+		node = g.addNode("29d0eb9f");
+		node.innerid = "";
+		
+
+		node = g.addNode("708e9076");
+		node.innerid = "";
+		
+
+		node = g.addNode("f26cb0a2");
+		node.innerid = "";
+		
+
+		node = g.addNode("845d7f89");
+		node.innerid = "";
+		
+
+		node = g.addNode("894f33c7");
+		node.innerid = "";
+		
+
+		node = g.addNode("97fd4548");
+		node.innerid = "";
+		
+
+		node = g.addNode("63e26949");
+		node.innerid = "";
+		
+
+		node = g.addNode("277aaa8a");
+		node.innerid = "";
+		
+
+		node = g.addNode("a4104ee3");
+		node.innerid = "";
+		
+
+		node = g.addNode("6cc2a38c");
+		node.innerid = "";
+		
+
+		node = g.addNode("d301a4f7");
+		node.innerid = "";
+		
+
+		node = g.addNode("12702990");
+		node.innerid = "";
+		
+
+		node = g.addNode("a0827eac");
+		node.innerid = "";
+		
+
+		node = g.addNode("f6890f96");
+		node.innerid = "";
+		
+
+		node = g.addNode("6317174a");
+		node.innerid = "";
+		
+
+		node = g.addNode("8e39e6d3");
+		node.innerid = "";
+		
+
+		node = g.addNode("10ecf03a");
+		node.innerid = "";
+		
+
+		node = g.addNode("b91295e6");
+		node.innerid = "";
+		
+
+		node = g.addNode("d7c6307d");
+		node.innerid = "";
+		
+
+		node = g.addNode("d3a11c60");
+		node.innerid = "";
+		
+
+		node = g.addNode("c9f5995e");
+		node.innerid = "";
+		
+
+		node = g.addNode("55892f09");
+		node.innerid = "";
+		
+
+		node = g.addNode("e4f1b1af");
+		node.innerid = "";
+		
+
+		node = g.addNode("b80645d5");
+		node.innerid = "";
+		
+
+		node = g.addNode("7245266b");
+		node.innerid = "";
+		
+
+		node = g.addNode("7c12c31d");
+		node.innerid = "";
+		
+
+		node = g.addNode("902c05ac");
+		node.innerid = "";
+		
+
+		node = g.addNode("7017c2dc");
+		node.innerid = "";
+		
+
+		node = g.addNode("0b5237a9");
+		node.innerid = "";
+		
+
+		node = g.addNode("52d0e3b9");
+		node.innerid = "";
+		
+
+		node = g.addNode("2fc88614");
+		node.innerid = "";
+		
+
+		node = g.addNode("e1af1a7b");
+		node.innerid = "";
+		
+
+		node = g.addNode("b7c1616d");
+		node.innerid = "";
+		
+
+		node = g.addNode("0a7e4b89");
+		node.innerid = "thumbnails";
+		
+
+		node = g.addNode("07f4fb0f");
+		node.innerid = "";
+		
+
+		node = g.addNode("e2cbd0f1");
+		node.innerid = "";
+		
+
+		node = g.addNode("b86142b4");
+		node.innerid = "";
+		
+
+		node = g.addNode("0f087108");
+		node.innerid = "";
+		
+g.addEdge("b7c1616d", "f724b731", { directed : true } );
+g.addEdge("fa9d7fb6", "25aa57ba", { directed : true } );
+g.addEdge("7acffb8b", "2f963dc4", { directed : true } );
+g.addEdge("7c12c31d", "d21c17be", { directed : true } );
+g.addEdge("e12fa161", "f57e92ee", { directed : true } );
+g.addEdge("0adfa206", "ad36702c", { directed : true } );
+g.addEdge("ba21026b", "642f204b", { directed : true } );
+g.addEdge("c54b16f7", "ebf4e5de", { directed : true } );
+g.addEdge("9b2e1d09", "a8c0f6c4", { directed : true } );
+g.addEdge("e1636e64", "ae08e7d5", { directed : true } );
+g.addEdge("509fb190", "58100a99", { directed : true } );
+g.addEdge("c87dcee8", "e12fa161", { directed : true } );
+g.addEdge("9b0e7ca1", "e2f1edf1", { directed : true } );
+g.addEdge("b80645d5", "e2f1edf1", { directed : true } );
+g.addEdge("7cdabbed", "ad33acea", { directed : true } );
+g.addEdge("277aaa8a", "a14276bb", { directed : true } );
+g.addEdge("5867de82", "a14276bb", { directed : true } );
+g.addEdge("2c25e9f7", "04935f3c", { directed : true } );
+g.addEdge("193feb61", "04935f3c", { directed : true } );
+g.addEdge("52d0e3b9", "cd37d6ab", { directed : true } );
+g.addEdge("f4449ff1", "5867de82", { directed : true } );
+g.addEdge("e9e8ea4d", "a072c9f0", { directed : true } );
+g.addEdge("3325fae3", "a072c9f0", { directed : true } );
+g.addEdge("ba21026b", "c90998ae", { directed : true } );
+g.addEdge("6cc2a38c", "24139604", { directed : true } );
+g.addEdge("873b9d9b", "1a2a35c4", { directed : true } );
+g.addEdge("50e4a5da", "c88456e7", { directed : true } );
+g.addEdge("b487f036", "8099f553", { directed : true } );
+g.addEdge("a0827eac", "d7a049c4", { directed : true } );
+g.addEdge("bcad8c18", "c54b16f7", { directed : true } );
+g.addEdge("ad36702c", "11888720", { directed : true } );
+g.addEdge("f26cb0a2", "dfca4f5d", { directed : true } );
+g.addEdge("b91295e6", "49aba238", { directed : true } );
+g.addEdge("949b46aa", "49aba238", { directed : true } );
+g.addEdge("0ac73631", "8c8668a0", { directed : true } );
+g.addEdge("881d2a08", "0279c7a0", { directed : true } );
+g.addEdge("b3f45e42", "137ba238", { directed : true } );
+g.addEdge("18227e1c", "b264af5e", { directed : true } );
+g.addEdge("3169305b", "4f0be992", { directed : true } );
+g.addEdge("bb25abfc", "0ac73631", { directed : true } );
+g.addEdge("e2cbd0f1", "7f51c87c", { directed : true } );
+g.addEdge("6317174a", "9b0e7ca1", { directed : true } );
+g.addEdge("a8c0f6c4", "9b0e7ca1", { directed : true } );
+g.addEdge("ebf4e5de", "c6a875f1", { directed : true } );
+g.addEdge("9d1cad0b", "3c505afc", { directed : true } );
+g.addEdge("ad33acea", "e93bcaf4", { directed : true } );
+g.addEdge("97fd4548", "8143bef3", { directed : true } );
+g.addEdge("157cf3fb", "8143bef3", { directed : true } );
+g.addEdge("2f963dc4", "c76287eb", { directed : true } );
+g.addEdge("b5082475", "c87dcee8", { directed : true } );
+g.addEdge("845d7f89", "bcbd247b", { directed : true } );
+g.addEdge("10ecf03a", "b5082475", { directed : true } );
+g.addEdge("6f284fe6", "e310921e", { directed : true } );
+g.addEdge("11888720", "75198949", { directed : true } );
+g.addEdge("894f33c7", "75198949", { directed : true } );
+g.addEdge("6ca0c132", "9798038a", { directed : true } );
+g.addEdge("36182c78", "881d2a08", { directed : true } );
+g.addEdge("f57e92ee", "a7930724", { directed : true } );
+g.addEdge("f724b731", "1d708a11", { directed : true } );
+g.addEdge("f6890f96", "883a36f2", { directed : true } );
+g.addEdge("77d7983e", "df5e268b", { directed : true } );
+g.addEdge("e1ee0069", "2c25e9f7", { directed : true } );
+g.addEdge("1d708a11", "996e1985", { directed : true } );
+g.addEdge("c88456e7", "2f6cd6e7", { directed : true } );
+g.addEdge("844fdf36", "13a6e6cc", { directed : true } );
+g.addEdge("7017c2dc", "55b7d0ee", { directed : true } );
+g.addEdge("badf63f3", "55b7d0ee", { directed : true } );
+g.addEdge("f3b95e19", "38620863", { directed : true } );
+g.addEdge("49523491", "8da283ef", { directed : true } );
+g.addEdge("58100a99", "840f5c14", { directed : true } );
+g.addEdge("49aba238", "480ebc3e", { directed : true } );
+g.addEdge("7ed67be8", "6ca0c132", { directed : true } );
+g.addEdge("5149f80c", "1df85a72", { directed : true } );
+g.addEdge("642f204b", "b3f45e42", { directed : true } );
+g.addEdge("996e1985", "11481a90", { directed : true } );
+g.addEdge("3e91addd", "48327247", { directed : true } );
+g.addEdge("09405fbc", "59c90c1a", { directed : true } );
+g.addEdge("01f9d7fc", "59c90c1a", { directed : true } );
+g.addEdge("8da283ef", "af645bcc", { directed : true } );
+g.addEdge("c4063725", "9aabdd65", { directed : true } );
+g.addEdge("bb410799", "6011258d", { directed : true } );
+g.addEdge("90e33589", "844fdf36", { directed : true } );
+g.addEdge("bf2feee6", "f2e897cb", { directed : true } );
+g.addEdge("8c8668a0", "087ae76e", { directed : true } );
+g.addEdge("e6b50be0", "f4449ff1", { directed : true } );
+g.addEdge("d3a11c60", "f4449ff1", { directed : true } );
+g.addEdge("02a79f1d", "3e91addd", { directed : true } );
+g.addEdge("a14276bb", "e22f70a9", { directed : true } );
+g.addEdge("8099f553", "bb25abfc", { directed : true } );
+g.addEdge("e93bcaf4", "fde9da91", { directed : true } );
+g.addEdge("badf63f3", "157cf3fb", { directed : true } );
+g.addEdge("38620863", "c18cf72c", { directed : true } );
+g.addEdge("656eaea3", "aed9add0", { directed : true } );
+g.addEdge("e2cbd0f1", "aed9add0", { directed : true } );
+g.addEdge("12702990", "09405fbc", { directed : true } );
+g.addEdge("55892f09", "09405fbc", { directed : true } );
+g.addEdge("cd37d6ab", "4d719525", { directed : true } );
+g.addEdge("9b6a2dc1", "76e3cad8", { directed : true } );
+g.addEdge("2fc88614", "6f284fe6", { directed : true } );
+g.addEdge("dc9d79c9", "bfe30246", { directed : true } );
+g.addEdge("052cc5c3", "c4063725", { directed : true } );
+g.addEdge("04935f3c", "656eaea3", { directed : true } );
+g.addEdge("e12b4243", "656eaea3", { directed : true } );
+g.addEdge("883a36f2", "744acb51", { directed : true } );
+g.addEdge("48347ba8", "e6b50be0", { directed : true } );
+g.addEdge("e1636e64", "e6b50be0", { directed : true } );
+g.addEdge("8e39e6d3", "f4d3a561", { directed : true } );
+g.addEdge("d301a4f7", "c4e61064", { directed : true } );
+g.addEdge("b264af5e", "3169305b", { directed : true } );
+g.addEdge("59c90c1a", "e1ee0069", { directed : true } );
+g.addEdge("1a2a35c4", "e1ee0069", { directed : true } );
+g.addEdge("8a466b04", "905a0098", { directed : true } );
+g.addEdge("c4e61064", "905a0098", { directed : true } );
+g.addEdge("2c87ef14", "686b6469", { directed : true } );
+g.addEdge("8143bef3", "052cc5c3", { directed : true } );
+g.addEdge("137ba238", "48347ba8", { directed : true } );
+g.addEdge("77d7983e", "90e33589", { directed : true } );
+g.addEdge("2f6cd6e7", "f3d1ce8c", { directed : true } );
+g.addEdge("6011258d", "ab005754", { directed : true } );
+g.addEdge("f7f6fa19", "b0cb7077", { directed : true } );
+g.addEdge("3a740fdd", "5149f80c", { directed : true } );
+g.addEdge("8143bef3", "69089b3e", { directed : true } );
+g.addEdge("ea16a1b9", "e9e8ea4d", { directed : true } );
+g.addEdge("3570ad2c", "e9e8ea4d", { directed : true } );
+g.addEdge("2c25e9f7", "e12b4243", { directed : true } );
+g.addEdge("b80645d5", "7acffb8b", { directed : true } );
+g.addEdge("4f0be992", "7cdabbed", { directed : true } );
+g.addEdge("b86142b4", "9677ad0e", { directed : true } );
+g.addEdge("137ba238", "e1636e64", { directed : true } );
+g.addEdge("895a238e", "9d1cad0b", { directed : true } );
+g.addEdge("c9f5995e", "e4249055", { directed : true } );
+g.addEdge("f3d1ce8c", "2c87ef14", { directed : true } );
+g.addEdge("9677ad0e", "7f47bf7c", { directed : true } );
+g.addEdge("07f4fb0f", "3a740fdd", { directed : true } );
+g.addEdge("b897f66d", "39fdc84f", { directed : true } );
+g.addEdge("11481a90", "fd1075db", { directed : true } );
+g.addEdge("b0cb7077", "bbee45b2", { directed : true } );
+g.addEdge("39fdc84f", "50e4a5da", { directed : true } );
+g.addEdge("686b6469", "f34a2040", { directed : true } );
+g.addEdge("48347ba8", "bb410799", { directed : true } );
+g.addEdge("e1af1a7b", "646ea21d", { directed : true } );
+g.addEdge("365bd7cf", "f3b95e19", { directed : true } );
+g.addEdge("f4d3a561", "f3b95e19", { directed : true } );
+g.addEdge("75198949", "365bd7cf", { directed : true } );
+g.addEdge("a7930724", "23532fe9", { directed : true } );
+g.addEdge("48327247", "18227e1c", { directed : true } );
+g.addEdge("69089b3e", "15232ff1", { directed : true } );
+g.addEdge("25aa57ba", "49523491", { directed : true } );
+g.addEdge("3570ad2c", "3325fae3", { directed : true } );
+g.addEdge("aed9add0", "ea16a1b9", { directed : true } );
+g.addEdge("7f51c87c", "ea16a1b9", { directed : true } );
+g.addEdge("6cc2a38c", "01f51cfc", { directed : true } );
+g.addEdge("c6a875f1", "0f12a7ae", { directed : true } );
+g.addEdge("902c05ac", "01f9d7fc", { directed : true } );
+g.addEdge("11e9ee29", "519ca906", { directed : true } );
+g.addEdge("7f51c87c", "3570ad2c", { directed : true } );
+g.addEdge("76e3cad8", "fa9d7fb6", { directed : true } );
+g.addEdge("e4249055", "df4b935c", { directed : true } );
+g.addEdge("55892f09", "873b9d9b", { directed : true } );
+g.addEdge("01f9d7fc", "873b9d9b", { directed : true } );
+g.addEdge("bfe30246", "4b6b4812", { directed : true } );
+g.addEdge("23532fe9", "36182c78", { directed : true } );
+g.addEdge("f6890f96", "b70b7f55", { directed : true } );
+g.addEdge("df5e268b", "b70b7f55", { directed : true } );
+g.addEdge("e4f1b1af", "a1cbd2c4", { directed : true } );
+g.addEdge("0f087108", "9b2e1d09", { directed : true } );
+g.addEdge("d7c6307d", "bcad8c18", { directed : true } );
+g.addEdge("4d719525", "dc9d79c9", { directed : true } );
+g.addEdge("63e26949", "7ed67be8", { directed : true } );
+g.addEdge("dfca4f5d", "3552f0e9", { directed : true } );
+g.addEdge("ccdfb980", "11e9ee29", { directed : true } );
+g.addEdge("a1cbd2c4", "cb92dedd", { directed : true } );
+g.addEdge("4b6b4812", "895a238e", { directed : true } );
+g.addEdge("c90998ae", "758183b3", { directed : true } );
+g.addEdge("b3f45e42", "758183b3", { directed : true } );
+g.addEdge("df4b935c", "ba21026b", { directed : true } );
+g.addEdge("8e39e6d3", "ba21026b", { directed : true } );
+g.addEdge("0f12a7ae", "b897f66d", { directed : true } );
+g.addEdge("29d0eb9f", "0adfa206", { directed : true } );
+g.addEdge("c76287eb", "0adfa206", { directed : true } );
+g.addEdge("1a2a35c4", "193feb61", { directed : true } );
+g.addEdge("3c505afc", "509fb190", { directed : true } );
+g.addEdge("18ec5366", "f7f6fa19", { directed : true } );
+g.addEdge("3552f0e9", "9b6a2dc1", { directed : true } );
+g.addEdge("af645bcc", "88317461", { directed : true } );
+g.addEdge("905a0098", "949b46aa", { directed : true } );
+g.addEdge("a4104ee3", "949b46aa", { directed : true } );
+g.addEdge("01f51cfc", "badf63f3", { directed : true } );
+g.addEdge("24139604", "badf63f3", { directed : true } );
+g.addEdge("646ea21d", "b487f036", { directed : true } );
+g.addEdge("9798038a", "bf2feee6", { directed : true } );
+g.addEdge("b70b7f55", "8a466b04", { directed : true } );
+g.addEdge("744acb51", "8a466b04", { directed : true } );
+g.addEdge("0b5237a9", "18ec5366", { directed : true } );
+g.addEdge("fd1075db", "ccdfb980", { directed : true } );
+g.addEdge("7245266b", "77d7983e", { directed : true } );
+g.addEdge("9aabdd65", "77d7983e", { directed : true } );
+g.addEdge("fde9da91", "626f1f07", { directed : true } );
+g.addEdge("e2f1edf1", "29d0eb9f", { directed : true } );
+g.addEdge("2f963dc4", "29d0eb9f", { directed : true } );
+g.addEdge("f34a2040", "708e9076", { directed : true } );
+g.addEdge("626f1f07", "f26cb0a2", { directed : true } );
+g.addEdge("d21c17be", "845d7f89", { directed : true } );
+g.addEdge("f7f6fa19", "894f33c7", { directed : true } );
+g.addEdge("55b7d0ee", "97fd4548", { directed : true } );
+g.addEdge("087ae76e", "63e26949", { directed : true } );
+g.addEdge("7f47bf7c", "277aaa8a", { directed : true } );
+g.addEdge("48347ba8", "277aaa8a", { directed : true } );
+g.addEdge("8a466b04", "a4104ee3", { directed : true } );
+g.addEdge("bcbd247b", "6cc2a38c", { directed : true } );
+g.addEdge("744acb51", "d301a4f7", { directed : true } );
+g.addEdge("902c05ac", "12702990", { directed : true } );
+g.addEdge("f7f6fa19", "12702990", { directed : true } );
+g.addEdge("e22f70a9", "a0827eac", { directed : true } );
+g.addEdge("365bd7cf", "a0827eac", { directed : true } );
+g.addEdge("13a6e6cc", "f6890f96", { directed : true } );
+g.addEdge("a072c9f0", "6317174a", { directed : true } );
+g.addEdge("9b2e1d09", "6317174a", { directed : true } );
+g.addEdge("e4249055", "8e39e6d3", { directed : true } );
+g.addEdge("f2e897cb", "10ecf03a", { directed : true } );
+g.addEdge("a4104ee3", "b91295e6", { directed : true } );
+g.addEdge("0279c7a0", "d7c6307d", { directed : true } );
+g.addEdge("ae08e7d5", "d3a11c60", { directed : true } );
+g.addEdge("480ebc3e", "c9f5995e", { directed : true } );
+g.addEdge("bbee45b2", "55892f09", { directed : true } );
+g.addEdge("840f5c14", "e4f1b1af", { directed : true } );
+g.addEdge("a8c0f6c4", "b80645d5", { directed : true } );
+g.addEdge("052cc5c3", "7245266b", { directed : true } );
+g.addEdge("15232ff1", "7245266b", { directed : true } );
+g.addEdge("cb92dedd", "7c12c31d", { directed : true } );
+g.addEdge("e310921e", "902c05ac", { directed : true } );
+g.addEdge("01f51cfc", "7017c2dc", { directed : true } );
+g.addEdge("6f284fe6", "0b5237a9", { directed : true } );
+g.addEdge("519ca906", "52d0e3b9", { directed : true } );
+g.addEdge("ab005754", "2fc88614", { directed : true } );
+g.addEdge("5867de82", "2fc88614", { directed : true } );
+g.addEdge("88317461", "e1af1a7b", { directed : true } );
+g.addEdge("1df85a72", "b7c1616d", { directed : true } );
+g.addEdge("c18cf72c", "0a7e4b89", { directed : true } );
+g.addEdge("d7a049c4", "0a7e4b89", { directed : true } );
+g.addEdge("708e9076", "07f4fb0f", { directed : true } );
+g.addEdge("193feb61", "e2cbd0f1", { directed : true } );
+g.addEdge("758183b3", "b86142b4", { directed : true } );
+g.addEdge("3325fae3", "0f087108", { directed : true } );
+levels["f724b731"] = 91;
+levels["25aa57ba"] = 141;
+levels["2f963dc4"] = 10;
+levels["d21c17be"] = 67;
+levels["f57e92ee"] = 118;
+levels["ad36702c"] = 7;
+levels["642f204b"] = 38;
+levels["ebf4e5de"] = 109;
+levels["a8c0f6c4"] = 13;
+levels["ae08e7d5"] = 34;
+levels["58100a99"] = 73;
+levels["e12fa161"] = 119;
+levels["e2f1edf1"] = 10;
+levels["ad33acea"] = 151;
+levels["a14276bb"] = 4;
+levels["04935f3c"] = 18;
+levels["cd37d6ab"] = 82;
+levels["5867de82"] = 31;
+levels["a072c9f0"] = 13;
+levels["c90998ae"] = 10;
+levels["24139604"] = 63;
+levels["1a2a35c4"] = 21;
+levels["c88456e7"] = 103;
+levels["8099f553"] = 133;
+levels["d7a049c4"] = 1;
+levels["c54b16f7"] = 110;
+levels["11888720"] = 6;
+levels["dfca4f5d"] = 146;
+levels["49aba238"] = 44;
+levels["8c8668a0"] = 130;
+levels["0279c7a0"] = 113;
+levels["137ba238"] = 36;
+levels["b264af5e"] = 155;
+levels["4f0be992"] = 153;
+levels["0ac73631"] = 131;
+levels["7f51c87c"] = 18;
+levels["02a79f1d"] = 159;
+levels["9b0e7ca1"] = 11;
+levels["c6a875f1"] = 108;
+levels["3c505afc"] = 75;
+levels["e93bcaf4"] = 150;
+levels["8143bef3"] = 59;
+levels["c76287eb"] = 9;
+levels["c87dcee8"] = 120;
+levels["bcbd247b"] = 65;
+levels["b5082475"] = 121;
+levels["e310921e"] = 25;
+levels["75198949"] = 5;
+levels["9798038a"] = 125;
+levels["881d2a08"] = 114;
+levels["a7930724"] = 117;
+levels["1d708a11"] = 90;
+levels["883a36f2"] = 50;
+levels["df5e268b"] = 49;
+levels["2c25e9f7"] = 19;
+levels["996e1985"] = 89;
+levels["2f6cd6e7"] = 102;
+levels["13a6e6cc"] = 52;
+levels["55b7d0ee"] = 61;
+levels["38620863"] = 2;
+levels["8da283ef"] = 139;
+levels["840f5c14"] = 72;
+levels["480ebc3e"] = 43;
+levels["6ca0c132"] = 126;
+levels["1df85a72"] = 93;
+levels["b3f45e42"] = 37;
+levels["11481a90"] = 88;
+levels["48327247"] = 157;
+levels["59c90c1a"] = 21;
+levels["af645bcc"] = 138;
+levels["9aabdd65"] = 56;
+levels["6011258d"] = 32;
+levels["844fdf36"] = 53;
+levels["f2e897cb"] = 123;
+levels["087ae76e"] = 129;
+levels["f4449ff1"] = 32;
+levels["3e91addd"] = 158;
+levels["e22f70a9"] = 3;
+levels["bb25abfc"] = 132;
+levels["fde9da91"] = 149;
+levels["157cf3fb"] = 60;
+levels["c18cf72c"] = 1;
+levels["aed9add0"] = 16;
+levels["09405fbc"] = 22;
+levels["4d719525"] = 81;
+levels["76e3cad8"] = 143;
+levels["6f284fe6"] = 29;
+levels["bfe30246"] = 79;
+levels["c4063725"] = 57;
+levels["656eaea3"] = 17;
+levels["744acb51"] = 49;
+levels["e6b50be0"] = 33;
+levels["f4d3a561"] = 4;
+levels["c4e61064"] = 47;
+levels["3169305b"] = 154;
+levels["e1ee0069"] = 20;
+levels["905a0098"] = 46;
+levels["686b6469"] = 99;
+levels["052cc5c3"] = 58;
+levels["48347ba8"] = 34;
+levels["90e33589"] = 54;
+levels["f3d1ce8c"] = 101;
+levels["ab005754"] = 31;
+levels["b0cb7077"] = 25;
+levels["5149f80c"] = 94;
+levels["69089b3e"] = 58;
+levels["e9e8ea4d"] = 14;
+levels["e12b4243"] = 18;
+levels["7acffb8b"] = 11;
+levels["7cdabbed"] = 152;
+levels["9677ad0e"] = 7;
+levels["e1636e64"] = 35;
+levels["9d1cad0b"] = 76;
+levels["e4249055"] = 41;
+levels["2c87ef14"] = 100;
+levels["7f47bf7c"] = 6;
+levels["3a740fdd"] = 95;
+levels["39fdc84f"] = 105;
+levels["fd1075db"] = 87;
+levels["bbee45b2"] = 24;
+levels["50e4a5da"] = 104;
+levels["f34a2040"] = 98;
+levels["bb410799"] = 33;
+levels["646ea21d"] = 135;
+levels["f3b95e19"] = 3;
+levels["365bd7cf"] = 4;
+levels["23532fe9"] = 116;
+levels["18227e1c"] = 156;
+levels["15232ff1"] = 57;
+levels["49523491"] = 140;
+levels["3325fae3"] = 16;
+levels["ea16a1b9"] = 15;
+levels["01f51cfc"] = 63;
+levels["0f12a7ae"] = 107;
+levels["01f9d7fc"] = 23;
+levels["519ca906"] = 84;
+levels["3570ad2c"] = 17;
+levels["fa9d7fb6"] = 142;
+levels["df4b935c"] = 40;
+levels["873b9d9b"] = 22;
+levels["4b6b4812"] = 78;
+levels["36182c78"] = 115;
+levels["b70b7f55"] = 48;
+levels["a1cbd2c4"] = 70;
+levels["9b2e1d09"] = 14;
+levels["bcad8c18"] = 111;
+levels["dc9d79c9"] = 80;
+levels["7ed67be8"] = 127;
+levels["3552f0e9"] = 145;
+levels["11e9ee29"] = 85;
+levels["cb92dedd"] = 69;
+levels["895a238e"] = 77;
+levels["758183b3"] = 9;
+levels["ba21026b"] = 39;
+levels["b897f66d"] = 106;
+levels["0adfa206"] = 8;
+levels["193feb61"] = 20;
+levels["509fb190"] = 74;
+levels["f7f6fa19"] = 26;
+levels["9b6a2dc1"] = 144;
+levels["88317461"] = 137;
+levels["949b46aa"] = 45;
+levels["badf63f3"] = 62;
+levels["b487f036"] = 134;
+levels["bf2feee6"] = 124;
+levels["8a466b04"] = 47;
+levels["18ec5366"] = 27;
+levels["ccdfb980"] = 86;
+levels["77d7983e"] = 55;
+levels["626f1f07"] = 148;
+levels["29d0eb9f"] = 9;
+levels["708e9076"] = 97;
+levels["f26cb0a2"] = 147;
+levels["845d7f89"] = 66;
+levels["894f33c7"] = 6;
+levels["97fd4548"] = 60;
+levels["63e26949"] = 128;
+levels["277aaa8a"] = 5;
+levels["a4104ee3"] = 46;
+levels["6cc2a38c"] = 64;
+levels["d301a4f7"] = 48;
+levels["12702990"] = 23;
+levels["a0827eac"] = 2;
+levels["f6890f96"] = 51;
+levels["6317174a"] = 12;
+levels["8e39e6d3"] = 40;
+levels["10ecf03a"] = 122;
+levels["b91295e6"] = 45;
+levels["d7c6307d"] = 112;
+levels["d3a11c60"] = 33;
+levels["c9f5995e"] = 42;
+levels["55892f09"] = 23;
+levels["e4f1b1af"] = 71;
+levels["b80645d5"] = 12;
+levels["7245266b"] = 56;
+levels["7c12c31d"] = 68;
+levels["902c05ac"] = 24;
+levels["7017c2dc"] = 62;
+levels["0b5237a9"] = 28;
+levels["52d0e3b9"] = 83;
+levels["2fc88614"] = 30;
+levels["e1af1a7b"] = 136;
+levels["b7c1616d"] = 92;
+levels["0a7e4b89"] = 0;
+levels["07f4fb0f"] = 96;
+levels["e2cbd0f1"] = 19;
+levels["b86142b4"] = 8;
+levels["0f087108"] = 15;
 
 	/* layout the graph using the Spring layout implementation */
-	var layouter = new Graph.Layout.Spring(g);
+	var layouter = new Graph.Layout.Leveled(g, levels);
 	layouter.layout();
 
 	/* draw the graph using the RaphaelJS draw implementation */
@@ -74,204 +1337,1468 @@ g.addEdge("a93960aa", "6ed62857", { directed : true } );
 -->
 </script>
 <div id="canvas"></div>
+<div id='console'></div>
 <button id="redraw" onclick="redraw();">redraw</button>
 
 <table><tr><td>Commit</td>
+<td>aux-5</td>
 <td>master</td>
-<td>test</td>
+<td>thumbnails</td>
+<td>origin/aux-5</td>
 <td>origin/master</td>
 </tr>
-<tr><td>995265aa</td>
+<tr><td>0a7e4b89</td>
+<td></td>
+<td></td>
+<td>X</td>
+<td></td>
+<td></td>
+</tr>
+<tr><td>c18cf72c</td>
+<td></td>
+<td></td>
+<td>X</td>
+<td></td>
+<td></td>
+</tr>
+<tr><td>38620863</td>
+<td></td>
+<td></td>
+<td>X</td>
+<td></td>
+<td></td>
+</tr>
+<tr><td>f3b95e19</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+</tr>
+<tr><td>d7a049c4</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>a0827eac</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>365bd7cf</td>
+<td>X</td>
+<td>X</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>c1ca4343</td>
+<tr><td>75198949</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>3659faa1</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>8684ad07</td>
+<tr><td>894f33c7</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>db999beb</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>81db94db</td>
+<tr><td>11888720</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>612be729</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>9b536a35</td>
+<tr><td>ad36702c</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>0b617cdf</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>4aac07fa</td>
+<tr><td>0adfa206</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>e0b04b45</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>fe405ef9</td>
+<tr><td>c76287eb</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>c766c6a1</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>05ed1988</td>
+<tr><td>29d0eb9f</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>10da0a6b</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>9a0ac456</td>
+<tr><td>2f963dc4</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>7f22a9c7</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>cf8df122</td>
+<tr><td>7acffb8b</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>1db5eb9f</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>bd6c516a</td>
+<tr><td>e2f1edf1</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>08fcbcd3</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>86f48782</td>
+<tr><td>b80645d5</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>dff8642e</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>8cbbdf43</td>
+<tr><td>9b0e7ca1</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>e26bbee7</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>6dfaa6b2</td>
+<tr><td>a8c0f6c4</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>a31a7401</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>e12b4860</td>
+<tr><td>6317174a</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>6d5659e1</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>b3f03c01</td>
+<tr><td>9b2e1d09</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>a80e137c</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>bedf0279</td>
+<tr><td>0f087108</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>d025627b</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>676167ad</td>
+<tr><td>a072c9f0</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>0474ac80</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>866d0191</td>
+<tr><td>3325fae3</td>
 <td>X</td>
 <td>X</td>
-<td>X</td>
-</tr>
-<tr><td>1d5720df</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>a93960aa</td>
+<tr><td>e9e8ea4d</td>
+<td>X</td>
+<td>X</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
 </tr>
-<tr><td>6ed62857</td>
+<tr><td>3570ad2c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>ea16a1b9</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>7f51c87c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>aed9add0</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>656eaea3</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e2cbd0f1</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e12b4243</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>04935f3c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>193feb61</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>2c25e9f7</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e1ee0069</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>1a2a35c4</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>873b9d9b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>59c90c1a</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>01f9d7fc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>09405fbc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>12702990</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>55892f09</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>bbee45b2</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b0cb7077</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f7f6fa19</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>902c05ac</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e310921e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>18ec5366</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>0b5237a9</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e22f70a9</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>6f284fe6</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>2fc88614</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>ab005754</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>a14276bb</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>5867de82</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f4449ff1</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>d3a11c60</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>ae08e7d5</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>277aaa8a</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>7f47bf7c</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>6011258d</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e6b50be0</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>bb410799</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e1636e64</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>48347ba8</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>137ba238</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>9677ad0e</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>b86142b4</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>758183b3</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>c90998ae</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr><td>b3f45e42</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>642f204b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f4d3a561</td>
+<td></td>
+<td>X</td>
+<td>X</td>
+<td></td>
+<td>X</td>
+</tr>
+<tr><td>ba21026b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>8e39e6d3</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>df4b935c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e4249055</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>c9f5995e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>480ebc3e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>49aba238</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b91295e6</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>949b46aa</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>a4104ee3</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>905a0098</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>c4e61064</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>d301a4f7</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>8a466b04</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>744acb51</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b70b7f55</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>883a36f2</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f6890f96</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>13a6e6cc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>df5e268b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>844fdf36</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>90e33589</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>77d7983e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>9aabdd65</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>c4063725</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>7245266b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>15232ff1</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>69089b3e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>052cc5c3</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>8143bef3</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>97fd4548</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>157cf3fb</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>55b7d0ee</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>7017c2dc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>badf63f3</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>01f51cfc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>24139604</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>6cc2a38c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>bcbd247b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>845d7f89</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>d21c17be</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>7c12c31d</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>cb92dedd</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>a1cbd2c4</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e4f1b1af</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>840f5c14</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>58100a99</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>509fb190</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>3c505afc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>9d1cad0b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>895a238e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>4b6b4812</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>bfe30246</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>dc9d79c9</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>4d719525</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>cd37d6ab</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>52d0e3b9</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>519ca906</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>11e9ee29</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>ccdfb980</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>fd1075db</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>11481a90</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>996e1985</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>1d708a11</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f724b731</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b7c1616d</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>1df85a72</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>5149f80c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>3a740fdd</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>07f4fb0f</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>708e9076</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f34a2040</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>686b6469</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>2c87ef14</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f3d1ce8c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>2f6cd6e7</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>c88456e7</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>50e4a5da</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>39fdc84f</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b897f66d</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>0f12a7ae</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>c6a875f1</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>ebf4e5de</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>c54b16f7</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>bcad8c18</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>d7c6307d</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>0279c7a0</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>881d2a08</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>36182c78</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>23532fe9</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>a7930724</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f57e92ee</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e12fa161</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>c87dcee8</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b5082475</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>10ecf03a</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f2e897cb</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>bf2feee6</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>9798038a</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>6ca0c132</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>7ed67be8</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>63e26949</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>087ae76e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>8c8668a0</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>0ac73631</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>bb25abfc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>8099f553</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b487f036</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>646ea21d</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e1af1a7b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>88317461</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>af645bcc</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>8da283ef</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>49523491</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>25aa57ba</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>fa9d7fb6</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>76e3cad8</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>9b6a2dc1</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>3552f0e9</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>dfca4f5d</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>f26cb0a2</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>626f1f07</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>fde9da91</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>e93bcaf4</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>ad33acea</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>7cdabbed</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>4f0be992</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>3169305b</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>b264af5e</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>18227e1c</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>48327247</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>3e91addd</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr><td>02a79f1d</td>
+<td>X</td>
+<td>X</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>

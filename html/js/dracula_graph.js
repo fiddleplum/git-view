@@ -240,12 +240,14 @@ Graph.Renderer.Raphael.prototype = {
             node.render = function(r, node) {
                 /* the default node drawing */
                 var color = Raphael.getColor();
-                var ellipse = r.ellipse(0, 0, 30, 20).attr({fill: color, stroke: color, "stroke-width": 2});
+                var ellipse = r.ellipse(0, 0, 5, 5).attr({fill: color, stroke: color, "stroke-width": 2});
                 /* set DOM node ID */
                 ellipse.node.id = node.label || node.id;
+				document.getElementById('console').innerHTML += '<p>' + node.innerid + '</p>';
                 shape = r.set().
                     push(ellipse).
-                    push(r.text(0, 30, node.label || node.id));
+					push(r.text(0, -15, node.innerid == '' ? '-' : node.innerid)).
+                    push(r.text(0, 15, node.label || node.id));
                 return shape;
             }
         }
@@ -448,6 +450,55 @@ Graph.Layout.Ordered.prototype = {
                 node.layoutPosY = Math.random();
                 counter++;
             }
+    },
+    
+    layoutCalcBounds: function() {
+        var minx = Infinity, maxx = -Infinity, miny = Infinity, maxy = -Infinity;
+
+        for (i in this.graph.nodes) {
+            var x = this.graph.nodes[i].layoutPosX;
+            var y = this.graph.nodes[i].layoutPosY;
+            
+            if(x > maxx) maxx = x;
+            if(x < minx) minx = x;
+            if(y > maxy) maxy = y;
+            if(y < miny) miny = y;
+        }
+
+        this.graph.layoutMinX = minx;
+        this.graph.layoutMaxX = maxx;
+
+        this.graph.layoutMinY = miny;
+        this.graph.layoutMaxY = maxy;
+    }
+};
+
+Graph.Layout.Leveled = function(graph, levels) {
+    this.graph = graph;
+    this.levels = levels;
+	this.levelCount = []
+    this.layout();
+};
+Graph.Layout.Leveled.prototype = {
+    layout: function() {
+        this.layoutPrepare();
+        this.layoutCalcBounds();
+    },
+    
+    layoutPrepare: function() {
+		this.levelCount = []
+        for (i in this.graph.nodes) {
+            var node = this.graph.nodes[i];
+			var level = this.levels[node.id];
+            node.layoutPosX = level;
+			if (level in this.levelCount) {
+				this.levelCount[level]++;
+			}
+			else {
+				this.levelCount[level] = 0;
+			}
+			node.layoutPosY = this.levelCount[level];
+        }
     },
     
     layoutCalcBounds: function() {
