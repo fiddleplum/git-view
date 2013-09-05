@@ -92,6 +92,7 @@ for branchName in activeBranchNames:
 				branchNames.add(toBranch)
 			else:
 				toBranch = 'master' # if no to branch is named, it defaults to master
+				# BUG : this is slightly broken, because it may be either master or origin/master
 			merges.append([lastCommit, fromBranch, toBranch])
 		elif logLine.startswith('    Merge pull request'):
 			fromBranchNameStartIndex = logLine.rfind(' ') + 1
@@ -127,26 +128,20 @@ for merge in merges:
 	if commits[commitName]['parents'][1] in commits:
 		if fromBranch != '':
 			commits[commits[commitName]['parents'][1]]['branches'].add(fromBranch)
-		
-
-
-# for date in sorted(commitsByDate.keys(), reverse=True):
-	# commitName = commitsByDate[date]
-	# if len(commits[commitName]['merge']) == 2:
-		# if commits[commitName]['parents'][0] in commits:
-			# if commits[commitName]['merge'][0] != '':
-				# commits[commits[commitName]['parents'][0]]['branches'].add(commits[commitName]['merge'][0])
-				# commits[commitName]['branches'].add(commits[commitName]['merge'][0])
-			# else:
-				# commits[commits[commitName]['parents'][0]]['branches'].update(commits[commitName]['merge'][0])
-		# if commits[commitName]['parents'][1] in commits:
-			# if commits[commitName]['merge'][1] != '':
-				# commits[commits[commitName]['parents'][1]]['branches'].add(commits[commitName]['merge'][1])
 
 # propogate the branches to the ancestors
-# for date in sorted(commitsByDate.keys(), reverse=True):
-	# commitName = commitsByDate[date]
-	# for branchName in commits[commitName]['branches']:
+for date in sorted(commitsByDate.keys(), reverse=True):
+	commitName = commitsByDate[date]
+	if len(commits[commitName]['parents']) == 1:
+		if commits[commitName]['parents'][0] in commits:
+			if len(commits[commits[commitName]['parents'][0]]['children']) == 1:
+				if len(commits[commits[commitName]['parents'][0]]['branches']) == 0:
+					commits[commits[commitName]['parents'][0]]['branches'].update(commits[commitName]['branches'])
+			elif len(commits[commits[commitName]['parents'][0]]['children']) == 2:
+				for branchName in commits[commitName]['branches']:
+					if branchName in ['master', 'staging', 'production', 'origin/master', 'origin/staging', 'origin/production']:
+						commits[commits[commitName]['parents'][0]]['branches'].add(branchName)
+
 		# noBranchParentName = ''
 		# for parentName in commits[commitName]['parents']:
 			# if parentName in commits and branchName in commits[parentName]['branches']:

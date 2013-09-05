@@ -487,34 +487,38 @@ Graph.Layout.Leveled.prototype = {
     
     layoutPrepare: function() {
 		this.levelCount = []
+		this.branches = ['-']
         for (i in this.graph.nodes) {
             var node = this.graph.nodes[i];
 			var level = this.levels[node.id];
             node.layoutPosX = level;
-			branchIndex = node.innerid.indexOf(',');
-			var branch = '';
-			if (branchIndex == -1) {
-				branch = node.innerid;
+			var nodeBranches = node.innerid.split(' ');
+			node.layoutPosY = Infinity;
+			for (i in nodeBranches) {
+				branch = nodeBranches[i];
+				if (this.branches.indexOf(branch) == -1) {
+					this.branches.push(branch);
+				}
+				if (node.layoutPosY > this.branches.indexOf(branch)) {
+					node.layoutPosY = this.branches.indexOf(branch);
+				}
 			}
-			else {
-				branch = node.innerid.substr(0, branchIndex);
+			if (node.layoutPosY == Infinity) {
+				node.layoutPosY = this.branches.indexOf('-');
 			}
-			if (branch == '') {
-				branch = '-';
-			}
-			if (this.branches.indexOf(branch) == -1) {
-				this.branches.push(branch);
-			}
-			document.getElementById('console').innerHTML += '<p>' + branch + ': ' + this.branches.indexOf(branch) + '</p>';
-			node.layoutPosY = this.branches.indexOf(branch);
+			// node.layoutPosY = this.branches.indexOf(branch);
+			// if (!(level in this.levelCount)) {
+				// this.levelCount[level] = {}
+			// }
+			// this.levelCount[level][node.layoutPosY] = node;
 			// if (level in this.levelCount) {
 				// this.levelCount[level]++;
 			// }
 			// else {
 				// this.levelCount[level] = 0;
 			// }
-			// node.layoutPosY = this.levelCount[level];
-			}
+			//node.layoutPosY = this.levelCount[level];
+		}
     },
     
     layoutCalcBounds: function() {
