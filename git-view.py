@@ -78,7 +78,7 @@ for branchName in activeBranchNames:
 				commits[name]['branches'].add(branchName)
 			lastCommit = name
 		elif logLine.startswith('Date'):
-			date = logLine[8:-6]
+			date = int(logLine[8:-6])
 			commits[lastCommit]['date'] = date
 			commitsByDate[date] = lastCommit
 		elif logLine.startswith('    Merge branch \''):
@@ -108,10 +108,13 @@ for commitName in commits:
 	for parentCommitName in commits[commitName]['parents']:
 		if parentCommitName in commits and commitName not in commits[parentCommitName]['children']:
 			commits[parentCommitName]['children'].append(commitName)
-		else:
+		elif parentCommitName not in commits and parentCommitName not in dummyCommits:
 			# make a dummy commit
 			commit = newCommit(parentCommitName)
+			commit['date'] = min(commitsByDate) - 1
+			print(' + ' + commit['name'] + ' ' + str(commit['date']))
 			dummyCommits[parentCommitName] = commit
+			commitsByDate[commit['date']] = parentCommitName
 commits.update(dummyCommits)
 
 # fill in branch info based on merge comments
@@ -174,16 +177,20 @@ for date in sorted(commitsByDate.keys(), reverse=True):
 
 # get commit levels
 maxLevel = 0
+count = 0
 for date in sorted(commitsByDate.keys(), reverse=True):
 	commitName = commitsByDate[date]
-	for parentCommitName in commits[commitName]['parents']:
-		if parentCommitName in commits:
-			commits[parentCommitName]['level'] = max(commits[parentCommitName]['level'], commits[commitName]['level'] + 1)
+	print(commitName, count)
+	commits[commitName]['level'] = count
+	count = count + 1
+	# for parentCommitName in commits[commitName]['parents']:
+		# if parentCommitName in commits:
+			# commits[parentCommitName]['level'] = max(commits[parentCommitName]['level'], commits[commitName]['level'] + 1)
 	maxLevel = max(maxLevel, commits[commitName]['level'])
 
 # get node text for each commit
 for commitName in commits:
-	commits[commitName]['nodetext'] = commits[commitName]['name'][:8]
+	commits[commitName]['nodetext'] = commits[commitName]['name'][:8] + ' ' + str(commits[commitName]['date'])
 
 # print html
 f = open('html/git-view.html', 'w')
