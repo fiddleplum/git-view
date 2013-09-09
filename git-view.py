@@ -112,7 +112,6 @@ for commitName in commits:
 			# make a dummy commit
 			commit = newCommit(parentCommitName)
 			commit['date'] = min(commitsByDate) - 1
-			print(' + ' + commit['name'] + ' ' + str(commit['date']))
 			dummyCommits[parentCommitName] = commit
 			commitsByDate[commit['date']] = parentCommitName
 commits.update(dummyCommits)
@@ -180,7 +179,6 @@ maxLevel = 0
 count = 0
 for date in sorted(commitsByDate.keys(), reverse=True):
 	commitName = commitsByDate[date]
-	print(commitName, count)
 	commits[commitName]['level'] = count
 	count = count + 1
 	# for parentCommitName in commits[commitName]['parents']:
