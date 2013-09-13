@@ -131,7 +131,7 @@ for merge in merges:
 		if fromBranch != '':
 			commits[commits[commitName]['parents'][1]]['branches'].add(fromBranch)
 
-# propogate the branches to the ancestors
+# propagate the branches to the ancestors
 for date in sorted(commitsByDate.keys(), reverse=True):
 	commitName = commitsByDate[date]
 	if len(commits[commitName]['parents']) == 1:
