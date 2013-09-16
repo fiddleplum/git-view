@@ -32,12 +32,14 @@ def newCommit (name):
 	commit['date'] = 0
 	commit['author'] = ''
 	commit['desc'] = ''
+	commit['count'] = 0
 	return commit
 
 def newBranch (name):
 	branch = {}
 	branch['name'] = name
 	branch['commits'] = set()
+	branch['latestcommit'] = ''
 	return branch
 
 # get branches
@@ -78,6 +80,8 @@ for branchName in branches:
 			else:
 				skipCommit = True
 			lastCommitName = name
+			if branch['latestcommit'] == '':
+				branch['latestcommit'] = name
 			branch['commits'].add(name)
 		elif logLine.startswith('Date'):
 			if not skipCommit:
@@ -95,9 +99,12 @@ for branchName in branches:
 				commits[lastCommitName]['desc'] += logLine.replace("&", r"&amp;").replace("<", r"&lt;").replace(">", r"&gt;").replace("\"", r"&quot;").replace("\'", r"\'")
 
 # get sorted by dates
-commitsByDate = {}
-for commitName in commits:
-	commitsByDate[commits[commitName]['date']] = commitName
+commitsByDate = sorted(commits.values(), key = lambda commit : commit['date'])
+commitsByDate.reverse()
+count = 0
+for commit in commitsByDate:
+	commit['count'] = count
+	count = count + 1
 
 # print html
 f = open('html/git-view-2.html', 'w')
@@ -113,23 +120,28 @@ print('<div id="info" style="background-color: white; visibility: hidden; positi
 
 # print first row
 print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 192px; top: 96px;" cellpadding=0 cellspacing=0><tr>', file = f)
-for date in sorted(commitsByDate.keys(), reverse=True):
-	commit = commits[commitsByDate[date]]
-	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + '<br />' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 32px;">''' + commit['name'][:4] + '</div></td>', file = f)
+for i in range(0, len(commitsByDate)):
+	commit = commitsByDate[i]
+	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + '<br />' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + commit['name'][:5] + '</div></td>', file = f)
 print('</tr></table>', file = f)
 
 # print first col
+def printBranchLabel(branchName):
+	global branches
+	if branchName in branches:
+		print('<tr><td class="branches"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
+	
 print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
-print('<tr><td class="branches">origin/production</td></tr>', file = f)
-print('<tr><td class="branches">production</td></tr>', file = f)
-print('<tr><td class="branches">origin/staging</td></tr>', file = f)
-print('<tr><td class="branches">staging</td></tr>', file = f)
-print('<tr><td class="branches">origin/master</td></tr>', file = f)
-print('<tr><td class="branches">master</td></tr>', file = f)
+printBranchLabel('origin/production')
+printBranchLabel('production')
+printBranchLabel('origin/staging')
+printBranchLabel('staging')
+printBranchLabel('origin/master')
+printBranchLabel('master')
 for branchName in branches:
 	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
 		continue;
-	print('<tr><td class="branches">' + branchName + '</td></tr>', file = f)
+	printBranchLabel(branchName)
 print('</table>', file = f)
 
 # print graph
@@ -140,23 +152,23 @@ def printBranch(branch):
 	global evenRow
 	evenCol = True
 	print('<tr>', file = f)
-	for date in sorted(commitsByDate.keys(), reverse=True):
-		commit = commits[commitsByDate[date]]
+	for i in range(0, len(commitsByDate)):
+		commit = commitsByDate[i]
 		color = ''
 		if commit['name'] in branch['commits']:
 			color = '#000000'
 		else:
 			if evenCol:
 				if evenRow:
-					color = '#ffa577'
+					color = '#ddddff'
 				else:
-					color = '#ff945e'
+					color = '#ddddff'
 			else:
 				if evenRow:
-					color = '#80a9ff'
+					color = '#ddddff'
 				else:
-					color = '#4d87ff'
-		print('<td style="align: center; background-color: ' + color + ';"><div style="text-align: center; width: 32px;"></div></td>', file = f)
+					color = '#ffffff'
+		print('<td style="align: center; background-color: ' + color + ';"><div style="text-align: center; width: 48px;"></div></td>', file = f)
 		evenCol = not evenCol
 	print('</tr>', file = f)
 	evenRow = not evenRow
@@ -183,6 +195,10 @@ function update()
 	document.getElementById('commits').style.top = (window.pageYOffset + 96) + 'px';
 	document.getElementById('branches').style.left = window.pageXOffset + 'px';
 	setTimeout('update()')
+}
+function moveTo(count)
+{
+	window.scrollTo(count * 48, window.pageYOffset);
 }
 update();
 </script>
