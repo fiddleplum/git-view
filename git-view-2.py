@@ -138,7 +138,7 @@ printBranchLabel('origin/staging')
 printBranchLabel('staging')
 printBranchLabel('origin/master')
 printBranchLabel('master')
-for branchName in branches:
+for branchName in sorted(branches):
 	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
 		continue;
 	printBranchLabel(branchName)
@@ -173,13 +173,19 @@ def printBranch(branch):
 	print('</tr>', file = f)
 	evenRow = not evenRow
 
-printBranch(branches['origin/production'])
-printBranch(branches['production'])
-printBranch(branches['origin/staging'])
-printBranch(branches['staging'])
-printBranch(branches['origin/master'])
-printBranch(branches['master'])
-for branchName in branches:
+if 'origin/production' in branches:
+  printBranch(branches['origin/production'])
+if 'production' in branches:
+  printBranch(branches['production'])
+if 'origin/staging' in branches:
+  printBranch(branches['origin/staging'])
+if 'staging' in branches:
+  printBranch(branches['staging'])
+if 'origin/master' in branches:
+  printBranch(branches['origin/master'])
+if 'master' in branches:
+  printBranch(branches['master'])
+for branchName in sorted(branches):
 	branch = branches[branchName]
 	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
 		continue;
@@ -188,17 +194,32 @@ for branchName in branches:
 print('</table>', file = f)
 print('''
 <script language="javascript">
+var targetX = 0;
+var sliding = false;
 function update()
 {
+	if(sliding)
+	{
+		var offset = Math.floor((targetX - window.pageXOffset) / 2);
+		if(Math.abs(offset) < 2)
+		{
+			offset = targetX - window.pageXOffset;
+			sliding = false;
+		}
+		window.scrollTo(window.pageXOffset + offset, window.pageYOffset);
+	}
+
 	document.getElementById('info').style.left = window.pageXOffset + 'px';
 	document.getElementById('info').style.top = window.pageYOffset + 'px';
 	document.getElementById('commits').style.top = (window.pageYOffset + 96) + 'px';
 	document.getElementById('branches').style.left = window.pageXOffset + 'px';
-	setTimeout('update()')
+
+	setTimeout('update()', 33)
 }
 function moveTo(count)
 {
-	window.scrollTo(count * 48, window.pageYOffset);
+	sliding = true;
+	targetX = count * 48;
 }
 update();
 </script>
