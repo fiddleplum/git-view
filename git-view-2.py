@@ -42,6 +42,9 @@ def newBranch (name):
 	branch['latestcommit'] = ''
 	return branch
 
+# make sure we have all the infos
+callGit('fetch -p')
+
 # get branches
 branchLines = callGit('branch -a')
 branches = {}
