@@ -122,7 +122,7 @@ td.branches { text-align: right; padding-right: 5px; }
 print('<div id="info" style="background-color: white; visibility: hidden; position:absolute; z-index: 3; left: 0; top: 0; height: 96px;"></div>', file = f )
 
 # print first row
-print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 192px; top: 96px;" cellpadding=0 cellspacing=0><tr>', file = f)
+print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px;" cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
 	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + '<br />' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + commit['name'][:5] + '</div></td>', file = f)
@@ -134,7 +134,7 @@ def printBranchLabel(branchName):
 	if branchName in branches:
 		print('<tr><td class="branches"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
 	
-print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
+print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
 printBranchLabel('origin/production')
 printBranchLabel('production')
 printBranchLabel('origin/staging')
@@ -148,7 +148,7 @@ for branchName in sorted(branches):
 print('</table>', file = f)
 
 # print graph
-print('<table style="position: absolute; table-layout: fixed; border: 0px solid black; left: 192px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
+print('<table style="position: absolute; table-layout: fixed; border: 0px solid black; left: 256px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
 
 evenRow = True
 def printBranch(branch):
@@ -215,7 +215,7 @@ function update()
 	document.getElementById('info').style.left = window.pageXOffset + 'px';
 	document.getElementById('info').style.top = window.pageYOffset + 'px';
 	document.getElementById('commits').style.top = (window.pageYOffset + 96) + 'px';
-	document.getElementById('branches').style.left = window.pageXOffset + 'px';
+	document.getElementById('branches').style.left = (window.pageXOffset + 256 - document.getElementById('branches').offsetWidth) + 'px';
 
 	setTimeout('update()', 33)
 }
