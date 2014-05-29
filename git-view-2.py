@@ -7,7 +7,7 @@ import time
 import cgi
 import datetime
 
-gitPath = '/bin/git'
+gitPath = '/usr/bin/git'
 
 if len(sys.argv) < 2:
 	print("Syntax: py git-view-2.py <path-to-git-repo> <maximum-number-commits-on-each-branch>")
