@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3.2
 
 import subprocess
 import os
@@ -192,7 +192,7 @@ for commitName in commits:
 
 # print html
 f = open('html/git-view.html', 'w')
-print('<html><body>', file =f )
+print('<html><body>', file = f )
 
 # print graph
 print('''
