@@ -159,35 +159,36 @@ def printBranch(branch):
 		commit = commitsByDate[i]
 		color = ''
 		if commit['name'] in branch['commits']:
-			color = '#000000'
-		else:
-			if evenCol:
-				if evenRow:
-					color = '#ddddff'
-				else:
-					color = '#ddddff'
+			if commit['name'] in branches['origin/production']['commits']:
+				color = '#00aa00'
+			elif commit['name'] in branches['origin/staging']['commits']:
+				color = '#ffaa00'
+			elif commit['name'] in branches['origin/master']['commits']:
+				color = '#ff0000'
 			else:
-				if evenRow:
-					color = '#ddddff'
-				else:
-					color = '#ffffff'
+				color = '#000000'
+		else:
+			if evenCol or evenRow:
+				color = '#ddddff'
+			else:
+				color = '#ffffff'
 		print('<td style="align: center; background-color: ' + color + ';"><div style="text-align: center; width: 48px;"></div></td>', file = f)
 		evenCol = not evenCol
 	print('</tr>', file = f)
 	evenRow = not evenRow
 
 if 'origin/production' in branches:
-  printBranch(branches['origin/production'])
+	printBranch(branches['origin/production'])
 if 'production' in branches:
-  printBranch(branches['production'])
+	printBranch(branches['production'])
 if 'origin/staging' in branches:
-  printBranch(branches['origin/staging'])
+	printBranch(branches['origin/staging'])
 if 'staging' in branches:
-  printBranch(branches['staging'])
+	printBranch(branches['staging'])
 if 'origin/master' in branches:
-  printBranch(branches['origin/master'])
+	printBranch(branches['origin/master'])
 if 'master' in branches:
-  printBranch(branches['master'])
+	printBranch(branches['master'])
 for branchName in sorted(branches):
 	branch = branches[branchName]
 	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
