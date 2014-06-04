@@ -140,7 +140,7 @@ def printBranchLabel(branchName):
 			color = '#ff0000'
 			text_color = '#ffffff'
 		elif branches[branchName]['level'] == 2:
-			color = '#ffaa00'
+			color = '#3388ff'
 		elif branches[branchName]['level'] == 3:
 			color = '#00aa00'
 		print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
@@ -162,7 +162,7 @@ def printBranch(branch):
 				color = '#00aa00'
 				branch['level'] = min(branch['level'], 3)
 			elif commit['name'] in branches['origin/staging']['commits']:
-				color = '#ffaa00'
+				color = '#3388ff'
 				branch['level'] = min(branch['level'], 2)
 			elif commit['name'] in branches['origin/master']['commits']:
 				color = '#ff0000'
