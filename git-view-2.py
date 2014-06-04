@@ -21,7 +21,6 @@ def callGit (args):
 	pr = subprocess.Popen([gitPath] + args.split(' '), cwd=path, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 	(out, error) = pr.communicate()
 	if len(error) != 0:
-#		print("Error running git " + args + ":\n" + error.decode('UTF-8'))
 		return None
 	else:
 		return out.decode('UTF-8').split('\n')
@@ -132,20 +131,19 @@ print('</tr></table>', file = f)
 def printBranchLabel(branchName):
 	global branches
 	if branchName in branches:
-		print('<tr><td class="branches"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
-	
-print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
-printBranchLabel('origin/production')
-printBranchLabel('production')
-printBranchLabel('origin/staging')
-printBranchLabel('staging')
-printBranchLabel('origin/master')
-printBranchLabel('master')
-for branchName in sorted(branches):
-	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
-		continue;
-	printBranchLabel(branchName)
-print('</table>', file = f)
+		color = '#ffffff';
+		text_color = '#000000'
+		if branches[branchName]['level'] == 0:
+			color = '#000000'
+			text_color = '#ffffff'
+		elif branches[branchName]['level'] == 1:
+			color = '#ff0000'
+			text_color = '#ffffff'
+		elif branches[branchName]['level'] == 2:
+			color = '#ffaa00'
+		elif branches[branchName]['level'] == 3:
+			color = '#00aa00'
+		print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
 
 # print graph
 print('<table style="position: absolute; table-layout: fixed; border: 0px solid black; left: 256px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
@@ -154,27 +152,32 @@ evenRow = True
 def printBranch(branch):
 	global evenRow
 	evenCol = True
-	print('<tr>', file = f)
+	branch['level'] = 3
+	commits_html = ''
 	for i in range(0, len(commitsByDate)):
 		commit = commitsByDate[i]
 		color = ''
 		if commit['name'] in branch['commits']:
 			if commit['name'] in branches['origin/production']['commits']:
 				color = '#00aa00'
+				branch['level'] = min(branch['level'], 3)
 			elif commit['name'] in branches['origin/staging']['commits']:
 				color = '#ffaa00'
+				branch['level'] = min(branch['level'], 2)
 			elif commit['name'] in branches['origin/master']['commits']:
 				color = '#ff0000'
+				branch['level'] = min(branch['level'], 1)
 			else:
 				color = '#000000'
+				branch['level'] = min(branch['level'], 0)
 		else:
 			if evenCol or evenRow:
 				color = '#ddddff'
 			else:
 				color = '#ffffff'
-		print('<td style="align: center; background-color: ' + color + ';"><div style="text-align: center; width: 48px;"></div></td>', file = f)
+		commits_html += '<td style="align: center; background-color: ' + color + ';"><div style="text-align: center; width: 48px;"></div></td>'
 		evenCol = not evenCol
-	print('</tr>', file = f)
+	print('<tr>' + commits_html + '</tr>', file = f)
 	evenRow = not evenRow
 
 if 'origin/production' in branches:
@@ -196,6 +199,20 @@ for branchName in sorted(branches):
 	printBranch(branch)
 
 print('</table>', file = f)
+
+print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
+printBranchLabel('origin/production')
+printBranchLabel('production')
+printBranchLabel('origin/staging')
+printBranchLabel('staging')
+printBranchLabel('origin/master')
+printBranchLabel('master')
+for branchName in sorted(branches):
+	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
+		continue;
+	printBranchLabel(branchName)
+print('</table>', file = f)
+
 print('''
 <script language="javascript">
 var targetX = 0;
