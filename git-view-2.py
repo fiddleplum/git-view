@@ -65,7 +65,7 @@ for branchName in branches:
 	branch = branches[branchName]
 	count = 0
 	lastCommitName = ''
-	logLines = callGit('log --date=raw --no-merges ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branch['name'])
+	logLines = callGit('log --no-merges --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branch['name'])
 	skipCommit = False
 	if logLines is None:
 		continue # not a valid branch, so ignore it
@@ -157,7 +157,11 @@ def printBranch(branch):
 	for i in range(0, len(commitsByDate)):
 		commit = commitsByDate[i]
 		color = ''
+		text_color = '#000000'
+		text = ''
 		if commit['name'] in branch['commits']:
+			if commit['desc'].startswith('Merge'):
+				text = 'M'
 			if commit['name'] in branches['origin/production']['commits']:
 				color = '#00aa00'
 				branch['level'] = min(branch['level'], 3)
@@ -166,16 +170,18 @@ def printBranch(branch):
 				branch['level'] = min(branch['level'], 2)
 			elif commit['name'] in branches['origin/master']['commits']:
 				color = '#ff0000'
+				text_color = '#ffffff'
 				branch['level'] = min(branch['level'], 1)
 			else:
 				color = '#000000'
+				text_color = '#ffffff'
 				branch['level'] = min(branch['level'], 0)
 		else:
 			if evenCol or evenRow:
 				color = '#ddddff'
 			else:
 				color = '#ffffff'
-		commits_html += '<td style="align: center; background-color: ' + color + ';"><div style="text-align: center; width: 48px;"></div></td>'
+		commits_html += '''<td style="align: center; background-color: ''' + color + '''; color: ''' + text_color + ''';" onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + '<br />' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + text + '''</div></td>'''
 		evenCol = not evenCol
 	print('<tr>' + commits_html + '</tr>', file = f)
 	evenRow = not evenRow
