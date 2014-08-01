@@ -65,7 +65,7 @@ for branchName in branches:
 	branch = branches[branchName]
 	count = 0
 	lastCommitName = ''
-	logLines = callGit('log --no-merges --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branch['name'])
+	logLines = callGit('log --no-merges --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branch['name'] + ' --')
 	skipCommit = False
 	if logLines is None:
 		continue # not a valid branch, so ignore it
