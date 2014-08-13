@@ -17,10 +17,11 @@ path = sys.argv[1]
 if path[-1] != "/":
 	path = path + "/"
 
-def callGit (args):
+def callGit (args, failOnError = True):
 	pr = subprocess.Popen([gitPath] + args.split(' '), cwd=path, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 	(out, error) = pr.communicate()
-	if len(error) != 0:
+	if len(error) != 0 and failOnError:
+		print('Error: ' + error.decode('UTF-8'))
 		return None
 	else:
 		return out.decode('UTF-8').split('\n')
@@ -39,10 +40,11 @@ def newBranch (name):
 	branch['name'] = name
 	branch['commits'] = set()
 	branch['latestcommit'] = ''
+	branch['local'] = True
 	return branch
 
 # make sure we have all the infos
-callGit('fetch -p')
+callGit('fetch -p', False)
 
 # get branches
 branchLines = callGit('branch -a')
@@ -55,6 +57,7 @@ for branchLine in branchLines:
 		continue
 	if branchName.startswith('remotes/'):
 		branches[branchName[8:]] = newBranch(branchName[8:])
+		branches[branchName[8:]]['local'] = False
 	else:
 		branches[branchName] = newBranch(branchName)
 
@@ -65,7 +68,7 @@ for branchName in branches:
 	branch = branches[branchName]
 	count = 0
 	lastCommitName = ''
-	logLines = callGit('log --no-merges --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branch['name'] + ' --')
+	logLines = callGit('log --no-merges --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
 	skipCommit = False
 	if logLines is None:
 		continue # not a valid branch, so ignore it
