@@ -68,7 +68,7 @@ for branchName in branches:
 	branch = branches[branchName]
 	count = 0
 	lastCommitName = ''
-	logLines = callGit('log --no-merges --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
+	logLines = callGit('log --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
 	skipCommit = False
 	if logLines is None:
 		continue # not a valid branch, so ignore it
@@ -121,7 +121,7 @@ td.branches { text-align: right; padding-right: 5px; }
 ''', file = f)
 
 # info area
-print('<div id="info" style="background-color: white; visibility: hidden; position:absolute; z-index: 3; left: 0; top: 0; height: 96px;"></div>', file = f )
+print('<div id="info" style="background-color: white; visibility: hidden; position:absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 96px;"></div>', file = f )
 
 # print first row
 print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px;" cellpadding=0 cellspacing=0><tr>', file = f)
