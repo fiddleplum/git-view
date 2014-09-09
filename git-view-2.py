@@ -103,6 +103,21 @@ for branchName in branches:
 					commits[lastCommitName]['desc'] += '<br />'
 				commits[lastCommitName]['desc'] += logLine.replace("&", r"&amp;").replace("<", r"&lt;").replace(">", r"&gt;").replace("\"", r"&quot;").replace("\'", r"\'")
 
+# get tags
+tags = callGit('tag')
+for tag in tags:
+	if tag is '':
+		continue
+	lines = callGit('show ' + tag)
+	if lines is not None:
+		for line in lines:
+			if line.startswith('commit'):
+				commitName = line[7:]
+				commit = newCommit(tag)
+				commit['date'] = commits[commitName]['date'] + 1
+				commit['desc'] = 'TAG to ' + commitName
+				commits[tag] = commit	
+
 # get sorted by dates
 commitsByDate = sorted(commits.values(), key = lambda commit : commit['date'])
 commitsByDate.reverse()
@@ -121,13 +136,17 @@ td.branches { text-align: right; padding-right: 5px; }
 ''', file = f)
 
 # info area
-print('<div id="info" style="background-color: white; visibility: hidden; position:absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 96px;"></div>', file = f )
+print('<div id="info" style="background-color: white; visibility: hidden; position:absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 84px;"></div>', file = f )
 
 # print first row
-print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px;" cellpadding=0 cellspacing=0><tr>', file = f)
+print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 84px;" cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
-	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + '<br />' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + commit['name'][:5] + '</div></td>', file = f)
+	if commit['desc'].startswith('TAG'):
+		commitName = commit['name']
+	else:
+		commitName = commit['name'][:5]
+	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + commitName + '</div></td>', file = f)
 print('</tr></table>', file = f)
 
 # print first col
