@@ -113,6 +113,8 @@ for tag in tags:
 		for line in lines:
 			if line.startswith('commit'):
 				commitName = line[7:]
+				if commitName not in commits:
+					continue
 				commit = newCommit(tag)
 				commit['date'] = commits[commitName]['date'] + 1
 				commit['desc'] = 'TAG to ' + commitName
@@ -125,6 +127,18 @@ count = 0
 for commit in commitsByDate:
 	commit['count'] = count
 	count = count + 1
+
+# filter out branches by count
+if len(sys.argv) == 3:
+	max_count = int(sys.argv[2])
+	for commit in commitsByDate:
+		if commit['count'] >= max_count:
+			for branchName in branches:
+				branch = branches[branchName]
+				if commit['name'] in branch['commits']:
+					branch['commits'].remove(commit['name'])
+			del commits[commit['name']]
+	commitsByDate = commitsByDate[:max_count]
 
 # print html
 f = open('html/git-view-2.html', 'w')
@@ -260,7 +274,7 @@ function update()
 
 	document.getElementById('info').style.left = window.pageXOffset + 'px';
 	document.getElementById('info').style.top = window.pageYOffset + 'px';
-	document.getElementById('commits').style.top = (window.pageYOffset + 96) + 'px';
+	document.getElementById('commits').style.top = (window.pageYOffset + 84) + 'px';
 	document.getElementById('branches').style.left = (window.pageXOffset + 256 - document.getElementById('branches').offsetWidth) + 'px';
 
 	setTimeout('update()', 33)
