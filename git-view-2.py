@@ -179,7 +179,10 @@ def printBranchLabel(branchName):
 			color = '#3388ff'
 		elif branches[branchName]['level'] == 3:
 			color = '#00aa00'
-		print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
+		if branches[branchName]['latestcommit'] in commits:
+			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
+		else:
+			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div>' + branchName + '</div></td></tr>', file = f)
 
 # print graph
 print('<table style="position: absolute; table-layout: fixed; border: 0px solid black; left: 256px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
