@@ -201,13 +201,13 @@ def printBranch(branch):
 		if commit['name'] in branch['commits']:
 			if commit['desc'].startswith('Merge'):
 				text = 'M'
-			if commit['name'] in branches['origin/production']['commits']:
+			if 'origin/production' in branches and commit['name'] in branches['origin/production']['commits']:
 				color = '#00aa00'
 				branch['level'] = min(branch['level'], 3)
-			elif commit['name'] in branches['origin/staging']['commits']:
+			elif 'origin/staging' in branches and commit['name'] in branches['origin/staging']['commits']:
 				color = '#3388ff'
 				branch['level'] = min(branch['level'], 2)
-			elif commit['name'] in branches['origin/master']['commits']:
+			elif 'origin/master' in branches and commit['name'] in branches['origin/master']['commits']:
 				color = '#ff0000'
 				text_color = '#ffffff'
 				branch['level'] = min(branch['level'], 1)
