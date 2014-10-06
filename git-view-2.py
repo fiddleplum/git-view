@@ -156,11 +156,16 @@ print('<div id="info" style="background-color: white; visibility: hidden; positi
 print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 84px;" cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
+	background = ''
 	if commit['desc'].startswith('TAG'):
 		commitName = commit['name']
+		background = 'yellow';
+	elif commit['desc'].startswith('Merge'):
+		commitName = commit['name'][:5]
+		background = 'orange';
 	else:
 		commitName = commit['name'][:5]
-	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + commitName + '</div></td>', file = f)
+	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '''\';" style="background: ''' + background + ''';"><div style="text-align: center; width: 48px; ">''' + commitName + '</div></td>', file = f)
 print('</tr></table>', file = f)
 
 # print first col
@@ -199,8 +204,6 @@ def printBranch(branch):
 		text_color = '#000000'
 		text = ''
 		if commit['name'] in branch['commits']:
-			if commit['desc'].startswith('Merge'):
-				text = 'M'
 			if 'origin/production' in branches and commit['name'] in branches['origin/production']['commits']:
 				color = '#00aa00'
 				branch['level'] = min(branch['level'], 3)
