@@ -10,7 +10,7 @@ import datetime
 gitPath = '/usr/bin/git'
 
 if len(sys.argv) < 2:
-	print("Syntax: py git-view-2.py <path-to-git-repo> <maximum-number-commits-on-each-branch>")
+	print("Syntax: py git-view-2.py <path-to-git-repo> <maximum-number-commits-on-each-branch> <no-merge>")
 	exit(0)
 
 path = sys.argv[1]
@@ -68,7 +68,11 @@ for branchName in branches:
 	branch = branches[branchName]
 	count = 0
 	lastCommitName = ''
-	logLines = callGit('log --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
+	if (len(sys.argv) >= 4) and (sys.argv[3] == 'no-merges'):
+		mergeOption = '--no-merges '
+	else:
+		mergeOption = ''
+	logLines = callGit('log --date=raw ' + mergeOption + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
 	skipCommit = False
 	if logLines is None:
 		continue # not a valid branch, so ignore it
@@ -129,7 +133,7 @@ for commit in commitsByDate:
 	count = count + 1
 
 # filter out branches by count
-if len(sys.argv) == 3:
+if len(sys.argv) >= 3:
 	max_count = int(sys.argv[2])
 	for commit in commitsByDate:
 		if commit['count'] >= max_count:
