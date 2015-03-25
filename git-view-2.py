@@ -10,7 +10,21 @@ import datetime
 gitPath = '/usr/bin/git'
 
 if len(sys.argv) < 2:
-	print("Syntax: py git-view-2.py <path-to-git-repo> <maximum-number-commits-on-each-branch> <no-merge>")
+	print("--Instructions--")
+	print("./git-view-2.py <path-to-git-repo> <maximum-number-of-commits-on-each-branch> <no-merge>")
+	print("  The script will create an HTML file, 'html/git-view-2.html', that you can view in any browser.")
+	print("  The HTML file is a giant table, where the columns are commits and the rows are branches")
+	print("    of the repository pointed to via <path-to-git-repo>.")
+	print("  Since some repositories can have a large history, you can set the <maximum-number-of-commits-on-each-branch>")
+	print("    to only process that number of commits on any given branch.")
+	print("  You also may want to ignore merges so that you can just see the content changes (beware of content changes")
+	print("    from merge conflicts, though), by adding 'no-merge' as the last parameter.")
+	print("  Once the HTML file is being viewed, feel free to scroll around to see what branches have which commits.")
+	print("  Green commits mean that the commit is also in 'origin/production', blue for 'origin/staging', and red for 'origin/master',")
+	print("    with green overriding blue overriding red. Black means it is in none of these branches.")
+	print("  Green branches mean that every commit in that branch is also in 'origin/production', and similarly for blue and red branches.")
+	print("    If a branch has at least one commit in none of the special branches, then it is black.")
+	print("  You may also hover over a commit id at the top to get details on the commit.")
 	exit(0)
 
 path = sys.argv[1]
