@@ -149,7 +149,7 @@ f = open('html/git-view-2.html', 'w')
 print('''<html>
 <style>
 td { height: 24px; }
-td.branches { text-align: right; padding-right: 5px; }
+td.branches { text-align: right; padding-right: 5px; white-space: nowrap; }
 </style><body>
 ''', file = f)
 
