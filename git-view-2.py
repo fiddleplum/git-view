@@ -157,7 +157,7 @@ td.branches { text-align: right; padding-right: 5px; }
 print('<div id="info" style="background-color: white; visibility: hidden; position:absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 84px;"></div>', file = f )
 
 # print first row
-print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 84px;" cellpadding=0 cellspacing=0><tr>', file = f)
+print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 84px; height: 36px;" cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
 	background = ''
@@ -252,7 +252,7 @@ for branchName in sorted(branches):
 
 print('</table>', file = f)
 
-print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
+print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0px; top: 120px; width: 256px;" cellpadding=0 cellspacing=0>', file = f)
 printBranchLabel('origin/production')
 printBranchLabel('production')
 printBranchLabel('origin/staging')
