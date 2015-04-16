@@ -168,10 +168,10 @@ td.branches { text-align: right; padding-right: 5px; white-space: nowrap; }
 ''', file = f)
 
 # info area
-print('<div id="info" style="background-color: white; visibility: hidden; position:absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 84px;"></div>', file = f )
+print('<div id="info" style="background-color: white; visibility: hidden; overflow: hidden; position:absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 84px;"></div>', file = f )
 
 # print first row
-print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 84px; height: 36px;" cellpadding=0 cellspacing=0><tr>', file = f)
+print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 84px; height: 36px; " cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
 	background = ''
@@ -183,7 +183,7 @@ for i in range(0, len(commitsByDate)):
 		background = 'orange';
 	else:
 		commitName = commit['name'][:5]
-	print('''<td onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '''\';" style="background: ''' + background + ''';"><div style="text-align: center; width: 48px; ">''' + commitName + '</div></td>', file = f)
+	print('''<td onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '''\';" style="background: ''' + background + ''';"><div style="text-align: center; width: 48px; height: 36px; overflow: hidden;">''' + commitName + '</div></td>', file = f)
 print('</tr></table>', file = f)
 
 # print first col
@@ -241,7 +241,7 @@ def printBranch(branch):
 				color = '#ddddff'
 			else:
 				color = '#ffffff'
-		commits_html += '''<td style="align: center; background-color: ''' + color + '''; color: ''' + text_color + ''';" onmouseout="document.getElementById('info').style.visibility = 'hidden';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + '<br />' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + text + '''</div></td>'''
+		commits_html += '''<td style="align: center; background-color: ''' + color + '''; color: ''' + text_color + ''';" onmouseover="document.getElementById('info').style.visibility = 'visible'; document.getElementById('info').innerHTML=\'''' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + '<br />' + commit['author'] + '<br />' + commit['desc'] + '''\';"><div style="text-align: center; width: 48px;">''' + text + '''</div></td>'''
 		evenCol = not evenCol
 	print('<tr>' + commits_html + '</tr>', file = f)
 	evenRow = not evenRow
