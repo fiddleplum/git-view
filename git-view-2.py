@@ -9,16 +9,18 @@ import datetime
 
 gitPath = '/usr/bin/git'
 
-if len(sys.argv) < 2:
+if len(sys.argv) < 3:
 	print("--Instructions--")
-	print("./git-view-2.py <path-to-git-repo> <maximum-number-of-commits-on-each-branch> <no-merge>")
+	print("./git-view-2.py <path-to-git-repo> <maximum-number-of-commits-on-each-branch> [no-merges] [sort-branches-by-date]")
 	print("  The script will create an HTML file, 'html/git-view-2.html', that you can view in any browser.")
 	print("  The HTML file is a giant table, where the columns are commits and the rows are branches")
 	print("    of the repository pointed to via <path-to-git-repo>.")
 	print("  Since some repositories can have a large history, you can set the <maximum-number-of-commits-on-each-branch>")
 	print("    to only process that number of commits on any given branch.")
 	print("  You also may want to ignore merges so that you can just see the content changes (beware of content changes")
-	print("    from merge conflicts, though), by adding 'no-merge' as the last parameter.")
+	print("    from merge conflicts, though), by adding 'no-merges'.")
+	print("  You also may want to sort the branches by their last commit date, so you can see which branches are stale,")
+	print("    by adding 'sort-branches-by-date'.")
 	print("  Once the HTML file is being viewed, feel free to scroll around to see what branches have which commits.")
 	print("  Green commits mean that the commit is also in 'origin/production', blue for 'origin/staging', and red for 'origin/master',")
 	print("    with green overriding blue overriding red. Black means it is in none of these branches.")
@@ -27,9 +29,20 @@ if len(sys.argv) < 2:
 	print("  You may also hover over a commit id at the top to get details on the commit.")
 	exit(0)
 
+# get params
 path = sys.argv[1]
 if path[-1] != "/":
 	path = path + "/"
+
+numCommits = int(sys.argv[2])
+
+noMerges = False
+sortBranchesByDate = False
+for arg in sys.argv:
+	if arg == 'no-merges':
+		noMerges = True
+	if arg == 'sort-branches-by-date':
+		sortBranchesByDate = True
 
 def callGit (args, failOnError = True):
 	pr = subprocess.Popen([gitPath] + args.split(' '), cwd=path, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
@@ -82,11 +95,11 @@ for branchName in branches:
 	branch = branches[branchName]
 	count = 0
 	lastCommitName = ''
-	if (len(sys.argv) >= 4) and (sys.argv[3] == 'no-merges'):
+	if noMerges:
 		mergeOption = '--no-merges '
 	else:
 		mergeOption = ''
-	logLines = callGit('log --date=raw ' + mergeOption + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
+	logLines = callGit('log --date=raw ' + mergeOption + '-n ' + str(numCommits) + ' ' + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
 	skipCommit = False
 	if logLines is None:
 		continue # not a valid branch, so ignore it
@@ -147,16 +160,20 @@ for commit in commitsByDate:
 	count = count + 1
 
 # filter out branches by count
-if len(sys.argv) >= 3:
-	max_count = int(sys.argv[2])
-	for commit in commitsByDate:
-		if commit['count'] >= max_count:
-			for branchName in branches:
-				branch = branches[branchName]
-				if commit['name'] in branch['commits']:
-					branch['commits'].remove(commit['name'])
-			del commits[commit['name']]
-	commitsByDate = commitsByDate[:max_count]
+for commit in commitsByDate:
+	if commit['count'] >= numCommits:
+		for branchName in branches:
+			branch = branches[branchName]
+			if commit['name'] in branch['commits']:
+				branch['commits'].remove(commit['name'])
+		del commits[commit['name']]
+commitsByDate = commitsByDate[:numCommits]
+
+# sort branch names
+if sortBranchesByDate:
+	branchNames = sorted(branches, key = lambda branchName : (commits[branches[branchName]['latestcommit']]['date'] if branches[branchName]['latestcommit'] in commits else 0))
+else:
+	branchNames = sorted(branches)
 
 # print html
 f = open('html/git-view-2.html', 'w')
@@ -258,11 +275,10 @@ if 'origin/master' in branches:
 	printBranch(branches['origin/master'])
 if 'master' in branches:
 	printBranch(branches['master'])
-for branchName in sorted(branches):
-	branch = branches[branchName]
+for branchName in branchNames:
 	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
 		continue;
-	printBranch(branch)
+	printBranch(branches[branchName])
 
 print('</table>', file = f)
 
@@ -273,7 +289,7 @@ printBranchLabel('origin/staging')
 printBranchLabel('staging')
 printBranchLabel('origin/master')
 printBranchLabel('master')
-for branchName in sorted(branches):
+for branchName in branchNames:
 	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
 		continue;
 	printBranchLabel(branchName)
