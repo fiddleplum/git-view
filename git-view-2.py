@@ -67,6 +67,7 @@ def newBranch (name):
 	branch['name'] = name
 	branch['commits'] = set()
 	branch['latestcommit'] = ''
+	branch['display'] = name
 	branch['local'] = True
 	return branch
 
@@ -84,6 +85,7 @@ for branchLine in branchLines:
 		continue
 	if branchName.startswith('remotes/'):
 		branches[branchName[8:]] = newBranch(branchName[8:])
+		branches[branchName[8:]]['display'] = branchName[8:].partition('/')[2] + ' (' + branchName[8:].partition('/')[0] + ')'
 		branches[branchName[8:]]['local'] = False
 	else:
 		branches[branchName] = newBranch(branchName)
@@ -173,14 +175,15 @@ commitsByDate = commitsByDate[:numCommits]
 if sortBranchesByDate:
 	branchNames = sorted(branches, key = lambda branchName : (commits[branches[branchName]['latestcommit']]['date'] if branches[branchName]['latestcommit'] in commits else 0))
 else:
-	branchNames = sorted(branches)
+	branchNames = sorted(branches, key = lambda branchName : branches[branchName]['display'])
 
 # print html
 f = open('html/git-view-2.html', 'w')
 print('''<html>
 <style>
 td { height: 24px; }
-td.branches { text-align: right; padding-right: 5px; white-space: nowrap; }
+td.branches { display: block; text-align: left; overflow: hidden; white-space: nowrap; }
+td.branches div { width: 251px; margin-left: 5px; }
 </style><body>
 ''', file = f)
 
@@ -222,9 +225,9 @@ def printBranchLabel(branchName):
 		elif branches[branchName]['level'] == 3:
 			color = '#00aa00'
 		if branches[branchName]['latestcommit'] in commits:
-			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branchName + '</div></td></tr>', file = f)
+			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branches[branchName]['display'] + '</div></td></tr>', file = f)
 		else:
-			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div>' + branchName + '</div></td></tr>', file = f)
+			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div>' + branches[branchName]['display'] + '</div></td></tr>', file = f)
 
 # print graph
 print('<table style="position: absolute; table-layout: fixed; border: 0px solid black; left: 256px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
@@ -284,7 +287,7 @@ for branchName in branchNames:
 
 print('</table>', file = f)
 
-print('<table id="branches" style="background-color: white; position: absolute; z-index: 1; left: 0px; top: 120px; width: 256px;" cellpadding=0 cellspacing=0>', file = f)
+print('<table id="branches" style="background-color: white; overflow: hidden; white-space: nowrap; position: absolute; z-index: 1; left: 0px; top: 120px; width: 256px;" cellpadding=0 cellspacing=0>', file = f)
 printBranchLabel('origin/production')
 printBranchLabel('production')
 printBranchLabel('origin/staging')
