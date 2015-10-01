@@ -181,7 +181,7 @@ else:
 f = open('html/git-view-2.html', 'w')
 print('''<html>
 <style>
-td { height: 24px; }
+td { height: 24px; overflow: hidden; white-space: nowrap; }
 td.branches { text-align: left; overflow: hidden; white-space: nowrap; }
 td.branches div { width: 251px; margin-left: 5px; }
 </style><body>
