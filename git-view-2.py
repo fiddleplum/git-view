@@ -182,7 +182,7 @@ f = open('html/git-view-2.html', 'w')
 print('''<html>
 <style>
 td { height: 24px; }
-td.branches { display: block; text-align: left; overflow: hidden; white-space: nowrap; }
+td.branches { text-align: left; overflow: hidden; white-space: nowrap; }
 td.branches div { width: 251px; margin-left: 5px; }
 </style><body>
 ''', file = f)
@@ -193,7 +193,7 @@ for i in range(0, len(commitsByDate)):
 	print('<div id="info_' + commit['name'] + '" style="background-color: white; visibility: hidden; overflow: hidden; position: absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 84px;" onmouseover="this.style.height=\'auto\'" onmouseout="this.style.height=\'84px\'">' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '</div>', file = f )
 
 # print first row
-print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 84px; height: 36px; " cellpadding=0 cellspacing=0><tr>', file = f)
+print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px; height: 24px; " cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
 	background = ''
@@ -205,7 +205,8 @@ for i in range(0, len(commitsByDate)):
 		background = 'orange';
 	else:
 		commitName = commit['name'][:5]
-	print('''<td onmouseover="if(activeInfo != null) activeInfo.style.visibility = 'hidden'; activeInfo = document.getElementById('info_''' + commit['name'] + ''''); activeInfo.style.visibility = 'visible';" style="background: ''' + background + ''';"><div style="text-align: center; width: 48px; height: 36px; overflow: hidden;">''' + commitName + '</div></td>', file = f)
+		background = 'white';
+	print('''<td onmouseover="if(activeInfo != null) activeInfo.style.visibility = 'hidden'; activeInfo = document.getElementById('info_''' + commit['name'] + ''''); activeInfo.style.visibility = 'visible';" style="background: ''' + background + ''';"><div style="text-align: center; width: 48px; overflow: hidden;">''' + commitName + '</div></td>', file = f)
 print('</tr></table>', file = f)
 
 # print first col
@@ -324,7 +325,7 @@ function update()
 		activeInfo.style.top = window.pageYOffset + 'px';
 		activeInfo.style.left = window.pageXOffset + 'px';
 	}
-	document.getElementById('commits').style.top = (window.pageYOffset + 84) + 'px';
+	document.getElementById('commits').style.top = (window.pageYOffset + 96) + 'px';
 	document.getElementById('branches').style.left = (window.pageXOffset + 256 - document.getElementById('branches').offsetWidth) + 'px';
 
 	setTimeout('update()', 33)
