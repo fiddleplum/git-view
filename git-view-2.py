@@ -184,6 +184,13 @@ print('''<html>
 td { height: 24px; overflow: hidden; white-space: nowrap; }
 td.branches { text-align: left; overflow: hidden; white-space: nowrap; }
 td.branches div { width: 251px; margin-left: 5px; }
+#cells td, #commits td { text-align: center; min-width: 48px; height: 24px; overflow: hidden; }
+.white { background-color: white; }
+.grey { background-color: #ddddff; }
+.notmerged { background-color: #000000; color: #ffffff; }
+.master { background-color: #ff0000; color: #ffffff; }
+.staging { background-color: #3388ff; }
+.production { background-color: #00aa00; }
 </style><body>
 ''', file = f)
 
@@ -193,7 +200,7 @@ for i in range(0, len(commitsByDate)):
 	print('<div id="info_' + commit['name'] + '" style="background-color: white; visibility: hidden; overflow: hidden; position: absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 84px;" onmouseover="this.style.height=\'auto\'" onmouseout="this.style.height=\'84px\'">' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '</div>', file = f )
 
 # print first row
-print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px; height: 24px; " cellpadding=0 cellspacing=0><tr>', file = f)
+print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px; height: 24px;" cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
 	background = ''
@@ -206,7 +213,7 @@ for i in range(0, len(commitsByDate)):
 	else:
 		commitName = commit['name'][:5]
 		background = 'white';
-	print('''<td onmouseover="if(activeInfo != null) activeInfo.style.visibility = 'hidden'; activeInfo = document.getElementById('info_''' + commit['name'] + ''''); activeInfo.style.visibility = 'visible';" style="background: ''' + background + ''';"><div style="text-align: center; width: 48px; overflow: hidden;">''' + commitName + '</div></td>', file = f)
+	print('''<td onmouseover="if(activeInfo != null) activeInfo.style.visibility = 'hidden'; activeInfo = document.getElementById('info_''' + commit['name'] + ''''); activeInfo.style.visibility = 'visible';" style="background: ''' + background + ''';">''' + commitName + '</td>', file = f)
 print('</tr></table>', file = f)
 
 # print first col
@@ -231,7 +238,7 @@ def printBranchLabel(branchName):
 			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div>' + branches[branchName]['display'] + '</div></td></tr>', file = f)
 
 # print graph
-print('<table style="position: absolute; table-layout: fixed; border: 0px solid black; left: 256px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
+print('<table id="cells" style="position: absolute; table-layout: fixed; border: 0px solid black; left: 256px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
 
 evenRow = True
 def printBranch(branch):
@@ -241,30 +248,27 @@ def printBranch(branch):
 	commits_html = ''
 	for i in range(0, len(commitsByDate)):
 		commit = commitsByDate[i]
-		color = ''
-		text_color = '#000000'
+		className = ''
 		text = ''
 		if commit['name'] in branch['commits']:
 			if 'origin/production' in branches and commit['name'] in branches['origin/production']['commits']:
-				color = '#00aa00'
+				className = 'production'
 				branch['level'] = min(branch['level'], 3)
 			elif 'origin/staging' in branches and commit['name'] in branches['origin/staging']['commits']:
-				color = '#3388ff'
+				className = 'staging'
 				branch['level'] = min(branch['level'], 2)
 			elif 'origin/master' in branches and commit['name'] in branches['origin/master']['commits']:
-				color = '#ff0000'
-				text_color = '#ffffff'
+				className = 'master'
 				branch['level'] = min(branch['level'], 1)
 			else:
-				color = '#000000'
-				text_color = '#ffffff'
+				className = 'notmerged'
 				branch['level'] = min(branch['level'], 0)
 		else:
 			if evenCol or evenRow:
-				color = '#ddddff'
+				className = 'grey'
 			else:
-				color = '#ffffff'
-		commits_html += '''<td style="align: center; background-color: ''' + color + '''; color: ''' + text_color + ''';" onmouseover="if(activeInfo != null) activeInfo.style.visibility = 'hidden'; activeInfo = document.getElementById('info_''' + commit['name'] + ''''); activeInfo.style.visibility = 'visible';"><div style="text-align: center; width: 48px;">''' + text + '''</div></td>\n'''
+				className = 'white'
+		commits_html += '''<td class="''' + className + '''">''' + text + '''</td>\n'''
 		evenCol = not evenCol
 	print('<tr>' + commits_html + '</tr>', file = f)
 	evenRow = not evenRow
@@ -325,10 +329,10 @@ function update()
 		activeInfo.style.top = window.pageYOffset + 'px';
 		activeInfo.style.left = window.pageXOffset + 'px';
 	}
-	document.getElementById('commits').style.top = (window.pageYOffset + 96) + 'px';
+	document.getElementById('commits').style.top = (window.scrollY + 96) + 'px';
 	document.getElementById('branches').style.left = (window.pageXOffset + 256 - document.getElementById('branches').offsetWidth) + 'px';
 
-	setTimeout('update()', 33)
+	setTimeout('update()', 500)
 }
 function moveTo(count)
 {
