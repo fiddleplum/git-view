@@ -184,7 +184,7 @@ print('''<html>
 td { height: 24px; overflow: hidden; white-space: nowrap; }
 td.branches { text-align: left; overflow: hidden; white-space: nowrap; }
 td.branches div { width: 251px; margin-left: 5px; }
-#cells td, #commits td { text-align: center; min-width: 48px; height: 24px; overflow: hidden; }
+#cells td, #commits td { text-align: center; min-width: 48px; max-width: 48px; height: 24px; overflow: hidden; }
 .white { background-color: white; }
 .grey { background-color: #ddddff; }
 .notmerged { background-color: #000000; color: #ffffff; }
