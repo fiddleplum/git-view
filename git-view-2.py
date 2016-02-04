@@ -195,12 +195,10 @@ td.branches div { width: 251px; margin-left: 5px; }
 ''', file = f)
 
 # info area
-for i in range(0, len(commitsByDate)):
-	commit = commitsByDate[i]
-	print('<div id="info_' + commit['name'] + '" style="background-color: white; visibility: hidden; overflow: hidden; position: absolute; z-index: 3; left: 0; top: 0; width: 90%; height: 84px;" onmouseover="this.style.height=\'auto\'" onmouseout="this.style.height=\'84px\'">' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'] + '</div>', file = f )
+print('<div id="info" style="position: absolute; z-index: 3; background: white; overflow: hidden; height: 96px;"></div>', file = f )
 
 # print first row
-print('<table id="commits" style="background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px; height: 24px;" cellpadding=0 cellspacing=0><tr>', file = f)
+print('<table id="commits" style="table-layout: fixed; background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px; height: 24px;" cellpadding=0 cellspacing=0><tr>', file = f)
 for i in range(0, len(commitsByDate)):
 	commit = commitsByDate[i]
 	background = ''
@@ -213,7 +211,7 @@ for i in range(0, len(commitsByDate)):
 	else:
 		commitName = commit['name'][:5]
 		background = 'white';
-	print('''<td onmouseover="if(activeInfo != null) activeInfo.style.visibility = 'hidden'; activeInfo = document.getElementById('info_''' + commit['name'] + ''''); activeInfo.style.visibility = 'visible';" style="background: ''' + background + ''';">''' + commitName + '</td>', file = f)
+	print('''<td onmouseover="document.getElementById('info').innerHTML = infos[\'''' + commit['name'] + '''\'];" style="background: ''' + background + ''';">''' + commitName + '</td>', file = f)
 print('</tr></table>', file = f)
 
 # print first col
@@ -292,7 +290,7 @@ for branchName in branchNames:
 
 print('</table>', file = f)
 
-print('<table id="branches" style="background-color: white; overflow: hidden; white-space: nowrap; position: absolute; z-index: 1; left: 0px; top: 120px; width: 256px;" cellpadding=0 cellspacing=0>', file = f)
+print('<table id="branches" style="table-layout: fixed; background-color: white; overflow: hidden; white-space: nowrap; position: absolute; z-index: 2; left: 0px; top: 120px; width: 256px;" cellpadding=0 cellspacing=0>', file = f)
 printBranchLabel('origin/production')
 printBranchLabel('production')
 printBranchLabel('origin/staging')
@@ -307,8 +305,6 @@ print('</table>', file = f)
 
 print('''
 <script language="javascript">
-var activeInfo = null;
-
 var targetX = 0;
 var sliding = false;
 function update()
@@ -324,15 +320,7 @@ function update()
 		window.scrollTo(window.pageXOffset + offset, window.pageYOffset);
 	}
 
-	if(activeInfo != null)
-	{
-		activeInfo.style.top = window.pageYOffset + 'px';
-		activeInfo.style.left = window.pageXOffset + 'px';
-	}
-	document.getElementById('commits').style.top = (window.scrollY + 96) + 'px';
-	document.getElementById('branches').style.left = (window.pageXOffset + 256 - document.getElementById('branches').offsetWidth) + 'px';
-
-	setTimeout('update()', 500)
+	setTimeout('update()', 30)
 }
 function moveTo(count)
 {
@@ -340,6 +328,25 @@ function moveTo(count)
 	targetX = count * 48;
 }
 update();
+window.addEventListener('scroll', function() {
+	document.getElementById('info').style.top = window.pageYOffset + 'px';
+	document.getElementById('info').style.left = window.pageXOffset + 'px';
+
+	var commitsPos = (window.scrollY + 96);
+	var branchesPos = (window.pageXOffset + 256 - document.getElementById('branches').offsetWidth);
+	if(document.getElementById('commits').offsetTop != commitsPos)
+		document.getElementById('commits').style.top = commitsPos + 'px';
+	if(document.getElementById('branches').offsetLeft != branchesPos)
+		document.getElementById('branches').style.left = branchesPos + 'px';
+});
+</script>
+<script>
+var infos = {}
+''', file = f)
+for i in range(0, len(commitsByDate)):
+	commit = commitsByDate[i]
+	print('infos["' + commit['name'] + '"]="' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'].replace('"', '&quot;').replace('\\', '\\\\') + '";', file = f)
+print('''
 </script>
 </body></html>
 ''', file = f)
