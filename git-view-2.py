@@ -248,14 +248,18 @@ def printBranch(branch):
 		commit = commitsByDate[i]
 		className = ''
 		text = ''
-		if commit['name'] in branch['commits']:
-			if 'origin/production' in branches and commit['name'] in branches['origin/production']['commits']:
+		if commit['desc'].startswith("TAG to "):
+			name = commit['desc'][7:]
+		else:
+			name = commit['name']
+		if name in branch['commits']:
+			if 'origin/production' in branches and name in branches['origin/production']['commits']:
 				className = 'production'
 				branch['level'] = min(branch['level'], 3)
-			elif 'origin/staging' in branches and commit['name'] in branches['origin/staging']['commits']:
+			elif 'origin/staging' in branches and name in branches['origin/staging']['commits']:
 				className = 'staging'
 				branch['level'] = min(branch['level'], 2)
-			elif 'origin/master' in branches and commit['name'] in branches['origin/master']['commits']:
+			elif 'origin/master' in branches and name in branches['origin/master']['commits']:
 				className = 'master'
 				branch['level'] = min(branch['level'], 1)
 			else:
