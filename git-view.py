@@ -1,25 +1,54 @@
-#!/usr/bin/env python3.2
+#!/usr/bin/env python3
 
 import subprocess
 import os
 import sys
 import time
+import cgi
+import datetime
 
 gitPath = '/usr/bin/git'
 
-if len(sys.argv) < 2:
-	print("Syntax: py git-view.py <path-to-git-repo> <maximum-number-commits-on-each-branch>")
+if len(sys.argv) < 3:
+	print("--Instructions--")
+	print("./git-view-2.py <path-to-git-repo> <maximum-number-of-commits-on-each-branch> [no-merges] [sort-branches-by-date]")
+	print("  The script will create an HTML file, 'html/git-view-2.html', that you can view in any browser.")
+	print("  The HTML file is a giant table, where the columns are commits and the rows are branches")
+	print("    of the repository pointed to via <path-to-git-repo>.")
+	print("  Since some repositories can have a large history, you can set the <maximum-number-of-commits-on-each-branch>")
+	print("    to only process that number of commits on any given branch.")
+	print("  You also may want to ignore merges so that you can just see the content changes (beware of content changes")
+	print("    from merge conflicts, though), by adding 'no-merges'.")
+	print("  You also may want to sort the branches by their last commit date, so you can see which branches are stale,")
+	print("    by adding 'sort-branches-by-date'.")
+	print("  Once the HTML file is being viewed, feel free to scroll around to see what branches have which commits.")
+	print("  Green commits mean that the commit is also in 'origin/production', blue for 'origin/staging', and red for 'origin/master',")
+	print("    with green overriding blue overriding red. Black means it is in none of these branches.")
+	print("  Green branches mean that every commit in that branch is also in 'origin/production', and similarly for blue and red branches.")
+	print("    If a branch has at least one commit in none of the special branches, then it is black.")
+	print("  You may also hover over a commit id at the top to get details on the commit.")
 	exit(0)
 
+# get params
 path = sys.argv[1]
 if path[-1] != "/":
 	path = path + "/"
 
-def callGit (args):
+numCommits = int(sys.argv[2])
+
+noMerges = False
+sortBranchesByDate = False
+for arg in sys.argv:
+	if arg == 'no-merges':
+		noMerges = True
+	if arg == 'sort-branches-by-date':
+		sortBranchesByDate = True
+
+def callGit (args, failOnError = True):
 	pr = subprocess.Popen([gitPath] + args.split(' '), cwd=path, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 	(out, error) = pr.communicate()
-	if len(error) != 0:
-#		print("Error running git " + args + ":\n" + error.decode('UTF-8'))
+	if len(error) != 0 and failOnError:
+		print('Error: ' + error.decode('UTF-8'))
 		return None
 	else:
 		return out.decode('UTF-8').split('\n')
@@ -27,16 +56,27 @@ def callGit (args):
 def newCommit (name):
 	commit = {}
 	commit['name'] = name
-	commit['branches'] = set() # set of branches at this commit
-	commit['merge'] = [] # list of branch names from a merge
-	commit['parents'] = [] # list of parents commits (from merges or just previous commits)
-	commit['children'] = [] # list of children commits
-	commit['level'] = 0
+	commit['date'] = 0
+	commit['author'] = ''
+	commit['desc'] = ''
+	commit['count'] = 0
 	return commit
+
+def newBranch (name):
+	branch = {}
+	branch['name'] = name
+	branch['commits'] = set()
+	branch['latestcommit'] = ''
+	branch['display'] = name
+	branch['local'] = True
+	return branch
+
+# make sure we have all the infos
+callGit('fetch -p', False)
 
 # get branches
 branchLines = callGit('branch -a')
-activeBranchNames = []
+branches = {}
 for branchLine in branchLines:
 	if len(branchLine) == 0:
 		continue
@@ -44,215 +84,274 @@ for branchLine in branchLines:
 	if branchName.startswith('remotes/origin/HEAD'):
 		continue
 	if branchName.startswith('remotes/'):
-		continue
-	activeBranchNames.append(branchName)
-branchNames = set()
-branchNames.update(activeBranchNames)
-
-# add only the remotes we care about
-remoteBranchNames = []
-for branchName in activeBranchNames:
-	remoteBranchNames.append('origin/' + branchName)
-activeBranchNames.extend(remoteBranchNames)
+		branches[branchName[8:]] = newBranch(branchName[8:])
+		branches[branchName[8:]]['display'] = branchName[8:].partition('/')[2] + ' (' + branchName[8:].partition('/')[0] + ')'
+		branches[branchName[8:]]['local'] = False
+	else:
+		branches[branchName] = newBranch(branchName)
 
 # get commits
-headCommits = []
 commits = {}
-commitsByDate = {}
-remotes = []
-merges = []
 
-for branchName in activeBranchNames:
+for branchName in branches:
+	branch = branches[branchName]
 	count = 0
-	lastCommit = None
-	logLines = callGit('log --date=raw ' + (('-n ' + sys.argv[2] + ' ') if len(sys.argv) == 3 else '') + branchName)
+	lastCommitName = ''
+	if noMerges:
+		mergeOption = '--no-merges '
+	else:
+		mergeOption = ''
+	logLines = callGit('log --date=raw ' + mergeOption + '-n ' + str(numCommits) + ' ' + ('heads/' if branch['local'] else 'remotes/') + branch['name'] + ' --')
+	skipCommit = False
 	if logLines is None:
 		continue # not a valid branch, so ignore it
 	for logLine in logLines:
+		logLine = logLine.strip(' \t')
+		if logLine is '':
+			continue
 		if logLine.startswith('commit '):
 			name = logLine[7:]
 			if name not in commits:
 				commit = newCommit(name)
 				commits[name] = commit
-			if lastCommit is None:	
-				commits[name]['branches'].add(branchName)
-			lastCommit = name
-		elif logLine.startswith('Date'):
-			date = int(logLine[8:-6])
-			commits[lastCommit]['date'] = date
-			commitsByDate[date] = lastCommit
-		elif logLine.startswith('    Merge branch \''):
-			fromBranchNameEndIndex = logLine.find('\'', 18)
-			firstRemote = (logLine[fromBranchNameEndIndex + 2:fromBranchNameEndIndex + 4] == 'of')
-			fromBranch = ('origin/' if firstRemote else '') + logLine[18:fromBranchNameEndIndex]
-			branchNames.add(fromBranch)
-			toBranchNameStartIndex = logLine.find('into ')
-			if toBranchNameStartIndex != -1:
-				toBranch = logLine[5 + toBranchNameStartIndex:]
-				branchNames.add(toBranch)
+				skipCommit = False
 			else:
-				toBranch = 'master' # if no to branch is named, it defaults to master
-				# BUG : this is slightly broken, because it may be either master or origin/master
-			merges.append([lastCommit, fromBranch, toBranch])
-		elif logLine.startswith('    Merge pull request'):
-			fromBranchNameStartIndex = logLine.rfind(' ') + 1
-			toBranch = ''
-			fromBranch = logLine[fromBranchNameStartIndex:]
-			branchNames.add(fromBranch)
-			merges.append([lastCommit, fromBranch, toBranch])
-
-# get parents of each commit
-dummyCommits = {}
-for commitName in commits:
-	commits[commitName]['parents'] = (callGit('rev-list --parents -n 1 ' + commitName)[0].split(' '))[1:]
-	for parentCommitName in commits[commitName]['parents']:
-		if parentCommitName in commits and commitName not in commits[parentCommitName]['children']:
-			commits[parentCommitName]['children'].append(commitName)
-		elif parentCommitName not in commits and parentCommitName not in dummyCommits:
-			# make a dummy commit
-			commit = newCommit(parentCommitName)
-			commit['date'] = min(commitsByDate) - 1
-			dummyCommits[parentCommitName] = commit
-			commitsByDate[commit['date']] = parentCommitName
-commits.update(dummyCommits)
-
-# fill in branch info based on merge comments
-for merge in merges:
-	commitName = merge[0]
-	fromBranch = merge[1]
-	toBranch = merge[2]
-	if commits[commitName]['parents'][0] in commits:
-		if toBranch != '':
-			commits[commitName]['branches'].add(toBranch)
-			commits[commits[commitName]['parents'][0]]['branches'].add(toBranch)
+				skipCommit = True
+			lastCommitName = name
+			if branch['latestcommit'] == '':
+				branch['latestcommit'] = name
+			branch['commits'].add(name)
+		elif logLine.startswith('Date'):
+			if not skipCommit:
+				try:
+					commits[lastCommitName]['date'] = int(logLine[8:-6])
+				except ValueError:
+					continue
+		elif logLine.startswith('Author'):
+			if not skipCommit:
+				commits[lastCommitName]['author'] = logLine[8:].replace("<", r"&lt;").replace(">", r"&gt;")
 		else:
-			commits[commits[commitName]['parents'][0]]['branches'].update(commits[commitName]['branches'])
-	if commits[commitName]['parents'][1] in commits:
-		if fromBranch != '':
-			commits[commits[commitName]['parents'][1]]['branches'].add(fromBranch)
+			if not skipCommit:
+				if len(commits[lastCommitName]['desc']) > 0:
+					commits[lastCommitName]['desc'] += '<br />'
+				commits[lastCommitName]['desc'] += logLine.replace("&", r"&amp;").replace("<", r"&lt;").replace(">", r"&gt;")
 
-# propagate the branches to the ancestors
-for date in sorted(commitsByDate.keys(), reverse=True):
-	commitName = commitsByDate[date]
-	if len(commits[commitName]['parents']) == 1:
-		if commits[commitName]['parents'][0] in commits:
-			if len(commits[commits[commitName]['parents'][0]]['children']) == 1:
-				if len(commits[commits[commitName]['parents'][0]]['branches']) == 0:
-					commits[commits[commitName]['parents'][0]]['branches'].update(commits[commitName]['branches'])
-			elif len(commits[commits[commitName]['parents'][0]]['children']) == 2:
-				for branchName in commits[commitName]['branches']:
-					if branchName in ['master', 'staging', 'production', 'origin/master', 'origin/staging', 'origin/production']:
-						commits[commits[commitName]['parents'][0]]['branches'].add(branchName)
+# get tags
+tags = callGit('tag')
+for tag in tags:
+	if tag is '':
+		continue
+	lines = callGit('show ' + tag)
+	if lines is not None:
+		for line in lines:
+			if line.startswith('commit'):
+				commitName = line[7:]
+				if commitName not in commits:
+					continue
+				commit = newCommit(tag)
+				commit['date'] = commits[commitName]['date'] + 1
+				commit['desc'] = 'TAG to ' + commitName
+				commits[tag] = commit	
 
-		# noBranchParentName = ''
-		# for parentName in commits[commitName]['parents']:
-			# if parentName in commits and branchName in commits[parentName]['branches']:
-				# noBranchParentName = ''
-				# break # the branch is already in a parent
-			# if parentName in commits and len(commits[parentName]['branches']) == 0:
-				# if noBranchParentName is not '':
-					# noBranchParentName = ''
-					# break # more than one parent with no branch
-				# noBranchParentName = parentName
-		# if noBranchParentName is not '':
-			# commits[noBranchParentName]['branches'].add(branchName)
-
-# propogate the branches to the descendants
-# for date in sorted(commitsByDate.keys(), reverse=False):
-	# commitName = commitsByDate[date]
-	# for branchName in commits[commitName]['branches']:
-		# noBranchChildName = ''
-		# for childName in commits[commitName]['children']:
-			# if childName in commits and branchName in commits[childName]['branches']:
-				# noBranchChildName = ''
-				# break # the branch is already in a child
-			# if childName in commits and len(commits[childName]['branches']) == 0:
-				# if noBranchChildName is not '':
-					# noBranchChildName = ''
-					# break # more than one child with no branch
-				# noBranchChildName = childName
-		# if noBranchChildName is not '':
-			# commits[noBranchChildName]['branches'].add(branchName)
-
-# get commit levels
-maxLevel = 0
+# get sorted by dates
+commitsByDate = sorted(commits.values(), key = lambda commit : commit['date'])
+commitsByDate.reverse()
 count = 0
-for date in sorted(commitsByDate.keys(), reverse=True):
-	commitName = commitsByDate[date]
-	commits[commitName]['level'] = count
+for commit in commitsByDate:
+	commit['count'] = count
 	count = count + 1
-	# for parentCommitName in commits[commitName]['parents']:
-		# if parentCommitName in commits:
-			# commits[parentCommitName]['level'] = max(commits[parentCommitName]['level'], commits[commitName]['level'] + 1)
-	maxLevel = max(maxLevel, commits[commitName]['level'])
 
-# get node text for each commit
-for commitName in commits:
-	commits[commitName]['nodetext'] = commits[commitName]['name'][:8] + ' ' + str(commits[commitName]['date'])
+# filter out branches by count
+for commit in commitsByDate:
+	if commit['count'] >= numCommits:
+		for branchName in branches:
+			branch = branches[branchName]
+			if commit['name'] in branch['commits']:
+				branch['commits'].remove(commit['name'])
+		del commits[commit['name']]
+commitsByDate = commitsByDate[:numCommits]
+
+# sort branch names
+if sortBranchesByDate:
+	branchNames = sorted(branches, key = lambda branchName : (commits[branches[branchName]['latestcommit']]['date'] if branches[branchName]['latestcommit'] in commits else 0))
+else:
+	branchNames = sorted(branches, key = lambda branchName : branches[branchName]['display'])
 
 # print html
-f = open('html/git-view.html', 'w')
-print('<html><body>', file = f )
+f = open('html/git-view-2.html', 'w')
+print('''<html>
+<style>
+td { height: 24px; overflow: hidden; white-space: nowrap; }
+td.branches { text-align: left; overflow: hidden; white-space: nowrap; }
+td.branches div { width: 251px; margin-left: 5px; }
+#cells td, #commits td { text-align: center; min-width: 48px; max-width: 48px; height: 24px; overflow: hidden; }
+.white { background-color: white; }
+.grey { background-color: #ddddff; }
+.notmerged { background-color: #000000; color: #ffffff; }
+.master { background-color: #ff0000; color: #ffffff; }
+.staging { background-color: #3388ff; }
+.production { background-color: #00aa00; }
+</style><body>
+''', file = f)
+
+# info area
+print('<div id="info" style="position: absolute; z-index: 3; background: white; overflow: hidden; height: 96px;"></div>', file = f )
+
+# print first row
+print('<table id="commits" style="table-layout: fixed; background-color: white; position: absolute; z-index: 2; table-layout: fixed; border: 0px solid black; left: 256px; top: 96px; height: 24px;" cellpadding=0 cellspacing=0><tr>', file = f)
+for i in range(0, len(commitsByDate)):
+	commit = commitsByDate[i]
+	background = ''
+	if commit['desc'].startswith('TAG'):
+		commitName = commit['name']
+		background = 'yellow';
+	elif commit['desc'].startswith('Merge'):
+		commitName = commit['name'][:5]
+		background = 'orange';
+	else:
+		commitName = commit['name'][:5]
+		background = 'white';
+	print('''<td onmouseover="document.getElementById('info').innerHTML = infos[\'''' + commit['name'] + '''\'];" style="background: ''' + background + ''';">''' + commitName + '</td>', file = f)
+print('</tr></table>', file = f)
+
+# print first col
+def printBranchLabel(branchName):
+	global branches
+	if branchName in branches:
+		color = '#ffffff';
+		text_color = '#000000'
+		if branches[branchName]['level'] == 0:
+			color = '#000000'
+			text_color = '#ffffff'
+		elif branches[branchName]['level'] == 1:
+			color = '#ff0000'
+			text_color = '#ffffff'
+		elif branches[branchName]['level'] == 2:
+			color = '#3388ff'
+		elif branches[branchName]['level'] == 3:
+			color = '#00aa00'
+		if branches[branchName]['latestcommit'] in commits:
+			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div onclick="moveTo(' + str(commits[branches[branchName]['latestcommit']]['count']) + ');">' + branches[branchName]['display'] + '</div></td></tr>', file = f)
+		else:
+			print('<tr><td class="branches" style="background-color: ' + color + '; color: ' + text_color + ';"><div>' + branches[branchName]['display'] + '</div></td></tr>', file = f)
 
 # print graph
+print('<table id="cells" style="position: absolute; table-layout: fixed; border: 0px solid black; left: 256px; top: 120px;" cellpadding=0 cellspacing=0>', file = f)
+
+evenRow = True
+def printBranch(branch):
+	global evenRow
+	evenCol = True
+	branch['level'] = 3
+	commits_html = ''
+	for i in range(0, len(commitsByDate)):
+		commit = commitsByDate[i]
+		className = ''
+		text = ''
+		if commit['desc'].startswith("TAG to "):
+			name = commit['desc'][7:]
+		else:
+			name = commit['name']
+		if name in branch['commits']:
+			if 'origin/production' in branches and name in branches['origin/production']['commits']:
+				className = 'production'
+				branch['level'] = min(branch['level'], 3)
+			elif 'origin/staging' in branches and name in branches['origin/staging']['commits']:
+				className = 'staging'
+				branch['level'] = min(branch['level'], 2)
+			elif 'origin/master' in branches and name in branches['origin/master']['commits']:
+				className = 'master'
+				branch['level'] = min(branch['level'], 1)
+			else:
+				className = 'notmerged'
+				branch['level'] = min(branch['level'], 0)
+		else:
+			if evenCol or evenRow:
+				className = 'grey'
+			else:
+				className = 'white'
+		commits_html += '''<td class="''' + className + '''">''' + text + '''</td>\n'''
+		evenCol = not evenCol
+	print('<tr>' + commits_html + '</tr>', file = f)
+	evenRow = not evenRow
+
+if 'origin/production' in branches:
+	printBranch(branches['origin/production'])
+if 'production' in branches:
+	printBranch(branches['production'])
+if 'origin/staging' in branches:
+	printBranch(branches['origin/staging'])
+if 'staging' in branches:
+	printBranch(branches['staging'])
+if 'origin/master' in branches:
+	printBranch(branches['origin/master'])
+if 'master' in branches:
+	printBranch(branches['master'])
+for branchName in branchNames:
+	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
+		continue;
+	printBranch(branches[branchName])
+
+print('</table>', file = f)
+
+print('<table id="branches" style="table-layout: fixed; background-color: white; overflow: hidden; white-space: nowrap; position: absolute; z-index: 2; left: 0px; top: 120px; width: 256px;" cellpadding=0 cellspacing=0>', file = f)
+printBranchLabel('origin/production')
+printBranchLabel('production')
+printBranchLabel('origin/staging')
+printBranchLabel('staging')
+printBranchLabel('origin/master')
+printBranchLabel('master')
+for branchName in branchNames:
+	if branchName in ['origin/production', 'production', 'origin/staging', 'staging', 'origin/master', 'master']:
+		continue;
+	printBranchLabel(branchName)
+print('</table>', file = f)
+
 print('''
-<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-<script type="text/javascript" src="js/raphael-min.js"></script>
-<script type="text/javascript" src="js/dracula_graffle.js"></script>
-<script type="text/javascript" src="js/dracula_graph.js"></script>
-<script type="text/javascript">
-<!--
-
-var redraw;
-var height = ''' + str(len(branchNames) * 60) + ''';
-var width = ''' + str(maxLevel * 100) + ''';
-
-/* only do all this when document has finished loading (needed for RaphaelJS */
-window.onload = function()
+<script language="javascript">
+var targetX = 0;
+var sliding = false;
+function update()
 {
-	var g = new Graph();
-	var levels = {};
-
-''', file = f)
-
-for commitName in commits:
-	print('''
-		node = g.addNode("''' + commits[commitName]['nodetext'] + '''");
-		node.innerid = "''' + ' '.join(commits[commitName]['branches']) + '''";
-		''', file = f)
-#	print(','.join(commits[commitName]['HEAD']))
-
-for commitName in commits:
-	for parentCommitName in commits[commitName]['parents']:
-		if parentCommitName in commits:
-			print('g.addEdge("' + commits[parentCommitName]['nodetext'] + '", "' + commits[commitName]['nodetext'] + '", { directed : true } );', file = f)
-
-for commitName in commits:
-	print('levels["' + commits[commitName]['nodetext'] + '"] = ' + str(commits[commitName]['level']) + ';', file = f)
-
-print('''
-	/* layout the graph using the Spring layout implementation */
-	var layouter = new Graph.Layout.Leveled(g, levels);
-	layouter.layout();
-
-	/* draw the graph using the RaphaelJS draw implementation */
-	var renderer = new Graph.Renderer.Raphael('canvas', g, width, height);
-	renderer.draw();
-
-	redraw = function()
+	if(sliding)
 	{
-		layouter.layout();
-		renderer.draw();
-	};
-};
+		var offset = Math.floor((targetX - window.pageXOffset) / 2);
+		if(Math.abs(offset) < 2)
+		{
+			offset = targetX - window.pageXOffset;
+			sliding = false;
+		}
+		window.scrollTo(window.pageXOffset + offset, window.pageYOffset);
+	}
 
--->
+	setTimeout('update()', 30)
+}
+function moveTo(count)
+{
+	sliding = true;
+	targetX = count * 48;
+}
+update();
+window.addEventListener('scroll', function() {
+	document.getElementById('info').style.top = window.pageYOffset + 'px';
+	document.getElementById('info').style.left = window.pageXOffset + 'px';
+
+	var commitsPos = (window.scrollY + 96);
+	var branchesPos = (window.pageXOffset + 256 - document.getElementById('branches').offsetWidth);
+	if(document.getElementById('commits').offsetTop != commitsPos)
+		document.getElementById('commits').style.top = commitsPos + 'px';
+	if(document.getElementById('branches').offsetLeft != branchesPos)
+		document.getElementById('branches').style.left = branchesPos + 'px';
+});
 </script>
-<div id="canvas"></div>
-<div id='console'></div>
-<button id="redraw" onclick="redraw();">redraw</button>
+<script>
+var infos = {}
 ''', file = f)
-
-# print top of table
-print('</body></html>', file = f)
+for i in range(0, len(commitsByDate)):
+	commit = commitsByDate[i]
+	print('infos["' + commit['name'] + '"]="' + commit['name'] + '<br />' + datetime.datetime.fromtimestamp(commit['date']).strftime('%Y-%m-%d %H:%M:%S') + ' ' + commit['author'] + '<br />' + commit['desc'].replace('"', '&quot;').replace('\\', '\\\\') + '";', file = f)
+print('''
+</script>
+</body></html>
+''', file = f)
 
