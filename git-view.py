@@ -11,7 +11,7 @@ gitPath = '/usr/bin/git'
 
 if len(sys.argv) < 3:
 	print("--Instructions--")
-	print("./git-view-2.py <path-to-git-repo> <maximum-number-of-commits-on-each-branch> [no-merges] [sort-branches-by-date]")
+	print("./git-view.py <path-to-git-repo> <maximum-number-of-commits-on-each-branch> [no-merges] [sort-branches-by-date]")
 	print("  The script will create an HTML file, 'html/git-view-2.html', that you can view in any browser.")
 	print("  The HTML file is a giant table, where the columns are commits and the rows are branches")
 	print("    of the repository pointed to via <path-to-git-repo>.")
